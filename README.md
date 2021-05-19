@@ -1,4 +1,4 @@
-# Client-Apps
+# DIY DIGITISED
 
 This is the client ordered stock management system that allows the user to:
 
