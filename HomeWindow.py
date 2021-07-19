@@ -6,7 +6,7 @@ import datetime
 import re
 
 # from Sales import Sales
-# from Customers import Customers
+from Customers import Customers
 # from CoalSticksLogs import CoalSticksLogs
 # from Invoices import Invoices
 # from EditFormWindow import EditFormWindow
@@ -18,68 +18,82 @@ class Parent():
     def __init__(self,master):
         self.master = master
 
-        windowWidth = (master.winfo_screenwidth() - 738) / 2
-        windowHeight = (master.winfo_screenheight() - 260) / 2
-
-        self.WindowConfig(738,260,windowWidth,windowHeight, master)
-        self.ProduceMenuCanvas(master,"Parent")
-        self.PlaceSaleQuickAddBox(master)
-        self.PlaceDescription(master)
-
-        master.mainloop()
-
-    def WindowConfig(self,w,h,x,y,master):
         master.config(bg="#ffca00")
         master.resizable(0,0)
-        master.geometry('%dx%d+%d+%d' % (w,h,x,y))
-    
-    def ProduceMenuCanvas(self,master,text):
-        MenuCanvas = Canvas(master)
-        MenuCanvas.create_rectangle(1, 1, 114, 255, fill="#add8e6",width = 3,outline="grey")
-        MenuTitle = "Menu"
-        
-        if text != "Coal":
-            MenuCanvas.place(x=2,y=2, width = 116, height = 257)
-        else:
-            MenuCanvas.place(x=2,y=70, width = 116, height = 257)
-            
-        if text == "Parent":
-            MenuTitle = "Home"
-        else:
-            MenuTitle = "Menu"
+        master.geometry('%dx%d' % (800, 550))
 
-        Label(MenuCanvas,text = MenuTitle,font=BUTTON_FONT,bg = "#add8e6").pack(side=TOP,pady=14)
-        ClientButton = ttk.Button(MenuCanvas,text = "Clients",width=15)
-        #,command = Customers(Tk()))
+        notebook = ttk.Notebook(master, width = 800, height= 450)
+        CustomersFrame = ttk.Frame(notebook, style = 'Customers.TFrame')
+        SalesFrame = ttk.Frame(notebook)
+        CoalSticksLogsFrame = ttk.Frame(notebook)
+
+        notebook.add(CustomersFrame, text = "Customers")
+        notebook.add(SalesFrame, text = "Sales")
+        notebook.add(CoalSticksLogsFrame, text = "CSL")
+
+        self.PopulateCustomersFrame(CustomersFrame)
+        self.PopulateSalesFrame(CustomersFrame)
+        self.PopulateCSLFrame(CustomersFrame)
+
+
+        notebook.pack(anchor = NW, pady = 5, padx = 5)
+        CustomersFrame.pack(fill = 'both', expand=True)
+        SalesFrame.pack(fill = 'both', expand=True)
+        CoalSticksLogsFrame.pack(fill = 'both', expand=True)
+
+    def PopulateCustomersFrame(self,Frame):
+        Customers(Frame)
+
+    # def PopulateSalesFrame(self,Frame):
+    #     Sales(Frame)
+    
+    # def PopulateCSLFrame(self,Frame):
+    #     CSL(Frame)
+
+    def ProduceMenuCanvas(self,master):
+        MenuCanvas = Canvas(master)
+        MenuCanvas.create_rectangle(1, 1, 116, 300, fill="#add8e6",outline="black")
+        
+        # MenuTitle = "Menu"
+        # if text != "Coal":
+        #     MenuCanvas.place(x=2,y=2, width = 116, height = 257)
+        # else:
+        #     
+            
+        TitleLabel = Label(MenuCanvas, text = "Menu", font=BUTTON_FONT, bg = "#add8e6")
+        TitleLabel.pack(side=TOP,pady=14)
+
+        ClientButton = ttk.Button(MenuCanvas,text = "Clients",width=10)
         ClientButton.pack(pady=2)
+        #,command = Customers(Tk()))
         SalesButton = ttk.Button(MenuCanvas,text = "Sales",width=15)
         SalesButton.pack(pady = 2)
         #,command = Sales(Tk())).pack(pady=2)
         CoalSticksLogsButton = ttk.Button(MenuCanvas,text = "Coal Sticks Logs",width = 15)
         CoalSticksLogsButton.pack(pady = 2)
         #,command = CoalSticksLogs(Tk())).pack(pady=2)
-        InvoicesButton = ttk.Button(MenuCanvas,text = "Invoices",width=15).pack(pady=2)
-
-
-        Close = "Return >"
-        if text == "Parent":
-            Close = "Quit"
+        InvoicesButton = ttk.Button(MenuCanvas, text = "Invoices", width=15)
+        InvoicesButton.pack(pady=2)
             
-        ReturnButton = ttk.Button(MenuCanvas,text=Close,command = master.destroy).pack(side=BOTTOM,pady=7)
+        ReturnButton = ttk.Button(MenuCanvas, text = "Return >", command = master.destroy)
+        ReturnButton.pack(side=BOTTOM,pady=7)
+
+        return MenuCanvas
         
     def PlaceSaleQuickAddBox(self,master):
 
         SideCanvas = Canvas(master,bg="#d8bfd8")
-        SideCanvas.place(x=496,y=2,width=240,height=230)
+        SideCanvas.place(x=700,y=2,width=240, height = 150)
         
         AddSaleCanvas = Canvas(SideCanvas)
-        AddSaleCanvas.place(x=4,y=36, width = 232, height = 190)
+        AddSaleCanvas.place(x=4,y=36, width = 232, height = 150)
         AddSaleCanvas.create_rectangle(1, 1, 230, 188, fill="#add8e6",width = 3,outline="grey")
 
         QuickAddFrame = LabelFrame(AddSaleCanvas,bg="#add8e6",bd=0)
         QuickAddFrame.place(x=6,y=7)
 
-        Label(SideCanvas,text = "Sale Quick Add",bg="#d8bfd8",font = BUTTON_FONT).pack(anchor="n",pady=5)
+        CanvasLabel = Label(SideCanvas,text = "Sale Quick Add Box",bg="#d8bfd8",font = BUTTON_FONT)
+        CanvasLabel.pack(anchor="n",pady=5)
         Label(QuickAddFrame, text="Company",bg="#add8e6").grid(row=0)
         Label(QuickAddFrame, text="Product Desc.",bg="#add8e6").grid(row=1)
         Label(QuickAddFrame, text="Quantity",bg="#add8e6").grid(row=2)
@@ -114,7 +128,7 @@ class Parent():
         StockCat = sorted(list(set(StockCat)))
         Parent.Category["values"] = StockCat
 
-        Parent.Category.bind("<Configure>",self.CheckWidth(StockCat))
+        #Parent.Category.bind("<Configure>", lambda: self.CheckWidth(StockCat))
         Parent.Category.bind("<<ComboboxSelected>>",Parent.ActivateAndFillItemBox)
            
         Parent.Quantity = Entry(QuickAddFrame)
@@ -219,8 +233,7 @@ class Parent():
                 Parent.StateLabel.config(text="**Error**",fg="red")
         except:
           Parent.StateLabel.config(text="**Error**",fg="red")
-
-        
+ 
     def AddRecordToSalesDatabase(self,QuickAddFrame):
         Parent.Confirm.destroy()
         OrderID = self.ProduceUniqueOrderID(Parent.Name)
@@ -275,28 +288,18 @@ class Parent():
         Parent.AddSale.config(text = "Add sale",command = lambda:
                               Parent.CheckandConfirm(QuickAddFrame))
         
-    
+    def ProduceTitleCanvas(self, master, text = "Parent"): 
+        TCanvas = Canvas(master)
 
-    def ProduceTitleCanvas(self,text):
-        if text == "Coal Sticks Logs" or text == "Invoices":
-            w = 509
-        elif text == "Edit Form":
-            w = 317
-        else:
-            w = 628
-            
-        TitleCanvas = Canvas(self)
-        if text == "Edit Form":
-            TitleCanvas.place(x=2,y=2,width=w,height = 68)
-        else:
-            TitleCanvas.place(x=120,y=2,width=w,height = 68)
-        TitleCanvas.create_rectangle(1, 1, w-2, 66, fill="#96C8A2",width = 3,outline="grey")
+        TCanvas.create_rectangle(1,1,0,0,fill="#96C8A2",width = 3,outline="grey")
 
-        WindowLabel = Label(TitleCanvas,text = text,font = TITLE_FONT,bg="#96C8A2").pack(side=LEFT,padx = 3) 
+        WindowLabel = Label(TCanvas,text = text,font = TITLE_FONT,bg="#96C8A2")
+        WindowLabel.pack(side=LEFT,padx = 3) 
         
-        ReturnButton = ttk.Button(TitleCanvas,text="Return >",command =self.destroy)
+        ReturnButton = ttk.Button(TCanvas,text="Return >",command = master.destroy)
         ReturnButton.pack(side=RIGHT,padx=9)
-    
+
+        return TCanvas
     
     def ProduceUniqueOrderID(Name):
         now = datetime.datetime.now()
@@ -463,13 +466,11 @@ class Parent():
                 self.StateLabel.config(text= "Error: Email",fg="red")
         else:
             self.StateLabel.config(text= "Error: Contact Number",fg="red")
-   
-root = Tk()
 
-backCanvas = Canvas(root, background = "#add8e6")
-backCanvas.place(x=119,y=2, width = 375, height = 70)
-
-MainWindow = Parent(root)
+if __name__ == "__main__":
+    root = Tk()
+    MainWindow = Parent(root)
+    root.mainloop()
 
 ##http://python-textbok.readthedocs.io/en/1.0/Introduction_to_GUI_Programming.html
 ##http://stackoverflow.com/questions/20588417/how-to-change-font-and-size-of-buttons-and-frame-in-tkinter-using-python
