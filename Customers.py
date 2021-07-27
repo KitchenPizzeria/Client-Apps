@@ -339,8 +339,6 @@ class Customers():
         self.Address.insert(0,items["values"][5])
         self.Postcode.insert(0,items["values"][6])
         
-        
-
     def ChangeDatabase(self):
 
         items = self.tree.item(self.tree.selection())

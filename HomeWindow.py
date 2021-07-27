@@ -1,3 +1,4 @@
+#Commit Starts Here
 from tkinter import *
 from decimal import *
 import tkinter.ttk as ttk
@@ -5,81 +6,62 @@ import sqlite3
 import datetime
 import re
 
-# from Sales import Sales
 from Customers import Customers
-# from CoalSticksLogs import CoalSticksLogs
-# from Invoices import Invoices
-# from EditFormWindow import EditFormWindow
+from Sales import Sales
 
 BUTTON_FONT = ("Georgia",16)
 TITLE_FONT = ("Georgia",28)
 
 class Parent():
     def __init__(self,master):
+        # Define Tk Window
         self.master = master
 
-        master.config(bg="#ffca00")
+        # Define windows properties
+        #master.config(bg="#ffca00")
         master.resizable(0,0)
         master.geometry('%dx%d' % (800, 550))
+        master.title("DIY Digitised")
 
+        # Parent Widget Definitions
         notebook = ttk.Notebook(master, width = 800, height= 450)
-        CustomersFrame = ttk.Frame(notebook, style = 'Customers.TFrame')
+        CustomersFrame = ttk.Frame(notebook)
         SalesFrame = ttk.Frame(notebook)
         CoalSticksLogsFrame = ttk.Frame(notebook)
+        
+        # Style for Notebook
+        # s = ttk.Style()
+        # s.theme_use('default')
+        # s.configure('TNotebook.Tab', background="green3")
+        # s.map("TNotebook", background= [("selected", "green3")])
 
-        notebook.add(CustomersFrame, text = "Customers")
-        notebook.add(SalesFrame, text = "Sales")
-        notebook.add(CoalSticksLogsFrame, text = "CSL")
-
+        # Populate Frames
         self.PopulateCustomersFrame(CustomersFrame)
-        self.PopulateSalesFrame(CustomersFrame)
-        self.PopulateCSLFrame(CustomersFrame)
+        self.PopulateSalesFrame(SalesFrame)
+        self.PopulateCSLFrame(CoalSticksLogsFrame)
 
-
-        notebook.pack(anchor = NW, pady = 5, padx = 5)
+        # Notebook/Frame Placement Rules
+        notebook.pack(fill = "both", expand = True)
         CustomersFrame.pack(fill = 'both', expand=True)
         SalesFrame.pack(fill = 'both', expand=True)
         CoalSticksLogsFrame.pack(fill = 'both', expand=True)
 
-    def PopulateCustomersFrame(self,Frame):
+        # Add all of the frames to the Notebook
+        notebook.add(CustomersFrame, text = "Customers")
+        notebook.add(SalesFrame, text = "Sales")
+        notebook.add(CoalSticksLogsFrame, text = "CSL")
+
+    def PopulateCustomersFrame(self, Frame):
         Customers(Frame)
 
-    # def PopulateSalesFrame(self,Frame):
-    #     Sales(Frame)
+    def PopulateSalesFrame(self, Frame):
+        pass
+        Sales(Frame)
     
-    # def PopulateCSLFrame(self,Frame):
-    #     CSL(Frame)
+    def PopulateCSLFrame(self, Frame):
+        pass
+        #CoalSticksLogs(Frame)
 
-    def ProduceMenuCanvas(self,master):
-        MenuCanvas = Canvas(master)
-        MenuCanvas.create_rectangle(1, 1, 116, 300, fill="#add8e6",outline="black")
-        
-        # MenuTitle = "Menu"
-        # if text != "Coal":
-        #     MenuCanvas.place(x=2,y=2, width = 116, height = 257)
-        # else:
-        #     
-            
-        TitleLabel = Label(MenuCanvas, text = "Menu", font=BUTTON_FONT, bg = "#add8e6")
-        TitleLabel.pack(side=TOP,pady=14)
-
-        ClientButton = ttk.Button(MenuCanvas,text = "Clients",width=10)
-        ClientButton.pack(pady=2)
-        #,command = Customers(Tk()))
-        SalesButton = ttk.Button(MenuCanvas,text = "Sales",width=15)
-        SalesButton.pack(pady = 2)
-        #,command = Sales(Tk())).pack(pady=2)
-        CoalSticksLogsButton = ttk.Button(MenuCanvas,text = "Coal Sticks Logs",width = 15)
-        CoalSticksLogsButton.pack(pady = 2)
-        #,command = CoalSticksLogs(Tk())).pack(pady=2)
-        InvoicesButton = ttk.Button(MenuCanvas, text = "Invoices", width=15)
-        InvoicesButton.pack(pady=2)
-            
-        ReturnButton = ttk.Button(MenuCanvas, text = "Return >", command = master.destroy)
-        ReturnButton.pack(side=BOTTOM,pady=7)
-
-        return MenuCanvas
-        
     def PlaceSaleQuickAddBox(self,master):
 
         SideCanvas = Canvas(master,bg="#d8bfd8")
@@ -151,23 +133,7 @@ class Parent():
         
         Parent.AddSale = ttk.Button(QuickAddFrame,text="Add Sale",command = lambda: Parent.CheckandConfirm(QuickAddFrame))
         Parent.AddSale.grid(row=7)
-        
-    def PlaceDescription(Parent,master):
-        
-        TextCanvas = Canvas(master)
-        TextCanvas.place(x=119,y=113, width = 375, height = 146)
-        TextCanvas.create_rectangle(1, 1, 373, 144, fill="#add8e6",width = 3,outline="grey")
-        
-        Text = '''Client/Stock Management system
-                Clients --> Edit 
-                Sales --> Show/Add/Edit/Delete/Filter the sales that clients make
-                Coal/Sticks/Logs --> Show/Add/Edit/Delete/Filter the CSL orders
-
-                You can also create the invoices when ready <-- This
-                needs touching up 
-                '''
-        Label(TextCanvas,text = Text,font = ("Georgia",15),bg = "#add8e6").place(x=3,y=3)
-
+    
     def ActivateAndFillItemBox(self,event):
         db = sqlite3.connect("Customers db.db")
         Link = db.cursor()

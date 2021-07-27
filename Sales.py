@@ -5,9 +5,7 @@ import sqlite3
 import datetime
 import re
 
-from HomeWindow import Parent
-
-class Sales(Parent):
+class Sales():
     def __init__(self,master):
         self.master = master
 
@@ -96,10 +94,4 @@ class Sales(Parent):
         Sales.Total.grid(row = 6,column=1)
         Sales.AddSale.grid(row=7,padx = 1)
         Sales.Confirm.grid(row=7,column=1,padx=1)
-        Sales.StateLabel.grid(row = 7,column=2,padx=1)
-    
-
-
-root = Tk()
-Sales(root)
-root.mainloop()     
+        Sales.StateLabel.grid(row = 7,column=2,padx=1)    
