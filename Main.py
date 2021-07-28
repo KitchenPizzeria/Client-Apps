@@ -315,7 +315,7 @@ class Parent():
         LowItemsQuantity = Label(LowItemsCanvas, text = "Quantity", bg = "#add8e6")
 
         FilterTitle = Label(FilterCanvas, text = "Filter", bg = "#add8e6", font = ("helvetica",18, "italic"))
-        ItemLabel = Label(FilterCanvas, text = "Item:", bg = "#add8e6")
+        ItemLabel = Label(FilterCanvas, text = "Category:", bg = "#add8e6")
         ItemCombobox = ttk.Combobox(FilterCanvas, width = 10)
         ApplyButton = ttk.Button(FilterCanvas, text = "Apply")
 
