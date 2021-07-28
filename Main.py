@@ -390,7 +390,7 @@ class Parent():
                 selectedItem = self.self.tree.selection()[0]
                 self.self.tree.delete(selectedItem)
 
-                db = sqlite3.connect("Customers db.db")
+                db = sqlite3.connect("Customers.db")
                 c = db.cursor()
                 c.execute("SELECT* FROM Customers")
                 Result = c.fetchall()
@@ -398,7 +398,7 @@ class Parent():
                     if Result[x][1] == items["values"][0] and Result[x][2] == items["values"][1] and Result[x][3] == items["values"][2]:
                         CustID = Result[x][0]
 
-                db = sqlite3.connect("Customers db.db")
+                db = sqlite3.connect("Customers.db")
                 c = db.cursor()
                 query = "DELETE FROM Customers WHERE CustomerID = '%s';"%CustID
                 c.execute(query)
@@ -486,7 +486,7 @@ class Parent():
         return AddClient
     
     def ActivateAndFillItemBox(self,event):
-        db = sqlite3.connect("Customers db.db")
+        db = sqlite3.connect("Customers.db")
         Link = db.cursor()
 
         Parent.StockItems = []
@@ -500,7 +500,7 @@ class Parent():
         self.CheckWidth(Parent.StockItems)
             
     def ActivateAndFillNameBox(self,event):
-        db = sqlite3.connect("Customers db.db")
+        db = sqlite3.connect("Customers.db")
         Link = db.cursor()
         
         Parent.Names = []
@@ -516,7 +516,7 @@ class Parent():
         self.CheckWidth(Parent.Names)
 
     def CheckandConfirm(Parent,QuickAddFrame):
-        db = sqlite3.connect("Customers db.db")
+        db = sqlite3.connect("Customers.db")
         c = db.cursor()
         c.execute("SELECT * FROM Inventory")
         result = c.fetchall() 
@@ -555,7 +555,7 @@ class Parent():
         Parent.Confirm.destroy()
         OrderID = self.ProduceUniqueOrderID(Parent.Name)
         
-        db = sqlite3.connect("Customers db.db")
+        db = sqlite3.connect("Customers.db")
         EachItem = db.execute("SELECT * FROM Inventory")
         for Record in EachItem:
             if Record[2] == Parent.Item.get():
@@ -622,7 +622,7 @@ class Parent():
         now = datetime.datetime.now()
         Date = str(now.day)+"/"+str(now.month)+"/"+str(now.year)
         
-        db = sqlite3.connect("Customers db.db")
+        db = sqlite3.connect("Customers.db")
 
         EachName = db.execute("SELECT * FROM Customers")
         for Record in EachName:
