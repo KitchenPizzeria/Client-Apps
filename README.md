@@ -25,3 +25,11 @@ Inventory:
  - Filter the table to see what items are already in stock for any certain category 
  - View how many items the shop has in total
 
+ Invoices:
+  - See what invoices are ready to be generated based on which clients have bought from them in the past month
+  - set invoices that have been previously generated as 'Paid', so that no further action needs to be taken
+  - Easily generate invoices and saving this to the documents folder so that it can be emailed to relevant company
+  - View total amount of revenue made from paid invoices 
+  - View the invoices which have already been created/paid for in a table view for records
+
+
