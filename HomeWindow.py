@@ -1,16 +1,15 @@
-#Commit Starts Here
 from tkinter import *
 from decimal import *
 import tkinter.ttk as ttk
 import sqlite3
 import datetime
 import re
-
-from Customers import Customers
-from Sales import Sales
+from ttkthemes import ThemedTk
 
 BUTTON_FONT = ("Georgia",16)
 TITLE_FONT = ("Georgia",28)
+DB = sqlite3.connect("Customers.db")
+CONN = DB.cursor()
 
 class Parent():
     def __init__(self,master):
@@ -18,121 +17,473 @@ class Parent():
         self.master = master
 
         # Define windows properties
-        #master.config(bg="#ffca00")
+        master.config(bg = "black")
         master.resizable(0,0)
-        master.geometry('%dx%d' % (800, 550))
+        master.geometry('%dx%d' % (700, 700))
         master.title("DIY Digitised")
 
-        # Parent Widget Definitions
-        notebook = ttk.Notebook(master, width = 800, height= 450)
-        CustomersFrame = ttk.Frame(notebook)
-        SalesFrame = ttk.Frame(notebook)
-        CoalSticksLogsFrame = ttk.Frame(notebook)
-        
         # Style for Notebook
-        # s = ttk.Style()
-        # s.theme_use('default')
-        # s.configure('TNotebook.Tab', background="green3")
-        # s.map("TNotebook", background= [("selected", "green3")])
+        style = ttk.Style()
+        
+        style.configure("TLabel", background = "#add8e6")
+        style.configure("TNotebook", tabbackground = "#B7E9F7", tabposition = "N")
+        style.configure(".", focuscolor = style.lookup('.', 'background'))
+        style.configure('TNotebook.Tab', 
+            background = "black", 
+            width = 15, 
+            foreground = "black",
+            font = ("Helvetica", 13, "italic"),
+            padding = (10, 10, 10, 10)
+        )
+        style.map("TNotebook", background = [("selected","#B7E9F7")])
+        style.map("TNotebook.Tab",
+            expand = [("selected", [-5, 0, -5, 0])] 
+        )
+    
+        # style.theme_create("custom_tabs", parent = "alt", settings = {
+        #     "." : {
+        #         "configure": {
+        #             "focuscolor" : style.lookup('.', 'background')
+        #         }
+        #     },
+        #     "TNotebook": {
+        #         "configure": {
+        #             "background" : "#B7E9F7"
+        #         }
+        #     },
+        #     "TNotebook.tab" : {
+        #         "configure" : {
+        #             "padding" : [0,0,0,0]
+        #         } ,
+        #         "map": {
+        #             "background": [("selected", '#ccffff')], # Tab color when selected
+        #             "expand": [("selected", [-5, 1, -5, 0])] # text margins
+        #         }
+        #     }
+        # })
 
+        # style.theme_use("custom_tabs")
+        
+
+        # Parent Widget Definitions
+        notebook = ttk.Notebook(master, padding = 3)
+        CustomersFrame = Frame(notebook, bg = "#B7E9F7")
+        SalesFrame = Frame(notebook, bg = "#B7E9F7")
+        InvoicesFrame = Frame(notebook, bg = "#B7E9F7")
+        InventoryFrame = Frame(notebook, bg = "#B7E9F7")
+    
         # Populate Frames
         self.PopulateCustomersFrame(CustomersFrame)
         self.PopulateSalesFrame(SalesFrame)
-        self.PopulateCSLFrame(CoalSticksLogsFrame)
-
+        self.PopulateInventoryFrame(InventoryFrame)
+        self.PopulateInvoicesFrame(InventoryFrame)
+        
         # Notebook/Frame Placement Rules
-        notebook.pack(fill = "both", expand = True)
-        CustomersFrame.pack(fill = 'both', expand=True)
-        SalesFrame.pack(fill = 'both', expand=True)
-        CoalSticksLogsFrame.pack(fill = 'both', expand=True)
+        notebook.pack()
+        CustomersFrame.pack(fill = 'both', expand= True)
+        SalesFrame.pack(fill = 'both', expand= True)
+        InvoicesFrame.pack(fill = 'both', expand= True)
+        InventoryFrame.pack(fill = 'both', expand= True)
 
-        # Add all of the frames to the Notebook
+        # Add frames to the Notebook
         notebook.add(CustomersFrame, text = "Customers")
         notebook.add(SalesFrame, text = "Sales")
-        notebook.add(CoalSticksLogsFrame, text = "CSL")
+        notebook.add(InventoryFrame, text = "Inventory")
+        notebook.add(InvoicesFrame, text = "Invoices")
 
-    def PopulateCustomersFrame(self, Frame):
-        Customers(Frame)
+    def PopulateCustomersFrame(self, Window):
 
-    def PopulateSalesFrame(self, Frame):
-        pass
-        Sales(Frame)
+        c = DB.execute("SELECT * FROM Customers")
+        fields = [description[0] for description in c.description]
+
+        self.TreeView(Window, fields).pack(side = BOTTOM, padx= 5, pady= 5)
+        self.CustomerInformationPane(Window).pack(side = LEFT, pady = 5, padx = 5)
+        self.AddClientForm(Window).pack(side = RIGHT)
     
-    def PopulateCSLFrame(self, Frame):
-        pass
-        #CoalSticksLogs(Frame)
+    def PopulateSalesFrame(self, Window):
+    
+        c = DB.execute("SELECT * FROM Sales")
+        fields = [description[0] for description in c.description]
 
-    def PlaceSaleQuickAddBox(self,master):
+        self.TreeView(Window, fields).pack(side = BOTTOM)
+        self.AddSalesForm(Window).pack(side = RIGHT)
+        self.SalesInformationPane(Window).pack(side=LEFT, padx = 2, pady =2)
+    
+    def PopulateInventoryFrame(self, Window):
 
-        SideCanvas = Canvas(master,bg="#d8bfd8")
-        SideCanvas.place(x=700,y=2,width=240, height = 150)
+        c = DB.execute("SELECT * FROM Inventory")
+        fields = [description[0] for description in c.description]
+
+        self.TreeView(Window, fields).pack(side = BOTTOM, padx = 5, pady = 5)
+        self.AddInventoryForm(Window).pack(side = RIGHT)
+        self.InventoryInformationPane(Window).pack(anchor = NW, padx = 2, pady = 2)
+
+    def PopulateInvoicesFrame(self, Window):
+
+        c = DB.execute("SELECT * FROM Invoices")
+        fields = [description[0] for description in c.description]
+
+        self.TreeView(Window, fields).pack(side = BOTTOM, padx = 5, pady = 5)
+        #self.AddInventoryForm(Window).pack(side = RIGHT)
+        self.InvoiceInformationPane(Window).pack(anchor = NW, padx = 2, pady = 2)
+
+
+    def CustomerInformationPane(self, master):
+    
+        # Canvas Definitions
+        rootCanvas = Canvas(master, bg = "#add8e6", width = 450, height = 280)
+        InfoCanvas = Canvas(rootCanvas, bg = "#add8e6", highlightthickness= 1)
+        ButtonCanvas = Canvas(rootCanvas)
+        #PictureCanvas = Canvas(rootCanvas)   
+
+        # Canvas Placements
+        ButtonCanvas.pack(side = BOTTOM, pady=8, padx = 20)
+        InfoCanvas.pack(side= RIGHT, padx= 30, pady= 25)
+        #PictureCanvas.pack(side = LEFT)
+
+        # Label Definitions
+        self.CFirstname = Label(InfoCanvas, text = "Firstname: None",bg = "#add8e6")
+        self.CLastname = Label(InfoCanvas, text = "Lastname: None",bg = "#add8e6")
+        self.CCompany = Label(InfoCanvas, text = "Company: None",bg = "#add8e6")
+        self.CTelephone = Label(InfoCanvas, text = "Telephone: None",bg = "#add8e6")
+        self.CEmail = Label(InfoCanvas, text = "Email: None",bg = "#add8e6")
+        self.CAddress = Label(InfoCanvas, text = "Address: None",bg = "#add8e6")
+        self.CPostcode = Label(InfoCanvas, text = "Postcode: None",bg = "#add8e6")
+        self.AmountOfClients = Label(InfoCanvas, text = "Amount of Clients: 0  ",bg = "#add8e6")
+    
+        # Label Placements
+        self.CFirstname.pack(side = TOP, pady = (5,0))
+        self.CLastname.pack(side = TOP)
+        self.CCompany.pack(side = TOP)
+        self.CTelephone.pack(side = TOP)
+        self.CEmail.pack(side = TOP)
+        self.CAddress.pack(side = TOP)
+        self.CPostcode.pack(side = TOP)
+        self.AmountOfClients.pack(side = TOP, pady = (0,5), padx = 5)
+
+        # Button Definitions
+        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = self.DisplayAllRecords)
+        self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
+        self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
+        self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
         
-        AddSaleCanvas = Canvas(SideCanvas)
-        AddSaleCanvas.place(x=4,y=36, width = 232, height = 150)
-        AddSaleCanvas.create_rectangle(1, 1, 230, 188, fill="#add8e6",width = 3,outline="grey")
 
-        QuickAddFrame = LabelFrame(AddSaleCanvas,bg="#add8e6",bd=0)
-        QuickAddFrame.place(x=6,y=7)
+        # Button Placements
+        self.ShowRecordsButton.grid(row=0,column=0)
+        self.SelectRecordButton.grid(row=0,column=1)
+        self.DeleteClientButton.grid(row=0,column=2)
+        self.EditClientButton.grid(row=0,column=3)
 
-        CanvasLabel = Label(SideCanvas,text = "Sale Quick Add Box",bg="#d8bfd8",font = BUTTON_FONT)
-        CanvasLabel.pack(anchor="n",pady=5)
-        Label(QuickAddFrame, text="Company",bg="#add8e6").grid(row=0)
-        Label(QuickAddFrame, text="Product Desc.",bg="#add8e6").grid(row=1)
-        Label(QuickAddFrame, text="Quantity",bg="#add8e6").grid(row=2)
-        Label(QuickAddFrame, text="Unit Price",bg="#add8e6").grid(row=3)
-        Label(QuickAddFrame, text = "Gross Total",bg="#add8e6").grid(row=4)
-        Label(QuickAddFrame, text = "Net Total",bg="#add8e6").grid(row=5)
-        Label(QuickAddFrame, text = "Vat",bg="#add8e6").grid(row=6)
+        return rootCanvas
 
-        Parent.Item = ttk.Combobox(QuickAddFrame,state = DISABLED,width = 6)
-        Parent.Name = ttk.Combobox(QuickAddFrame,state = DISABLED,width = 6)
+    def SalesInformationPane(self, master):
 
-        db = sqlite3.connect("Customers.db")
-        Link = db.cursor()
+        infoFrame = Canvas(master, bg = "#add8e6")
 
-        Parent.Company = ttk.Combobox(QuickAddFrame,width = 6)
-        Companies = db.execute("SELECT Company FROM Customers")
-        CompanyValues = []
-        for x in Companies:
-            if max(x) != "":
-                CompanyValues.append(max(x))
-        CompanyValues = sorted(list(set(CompanyValues)))
-        Parent.Company["values"] = CompanyValues
+        PerformanceCanvas = Canvas(infoFrame,
+            bg = "#add8e6", 
+            highlightthickness = 1, 
+            width = 375)
 
-        Parent.Company.bind("<<ComboboxSelected>>", Parent.ActivateAndFillNameBox)
+        PerformanceTitle = Label(PerformanceCanvas, text = "Performance",bg = "#add8e6", font = ("helvetica",18, "italic"))
+        daily = LabelFrame(PerformanceCanvas, text = "day", bg = "#add8e6")
+        dailytext = Label(daily, text = "daily stats", bg = "#add8e6")
+        monthly = LabelFrame(PerformanceCanvas, text = "month", bg = "#add8e6")
+        monthlytext = Label(monthly, text = "monthly stats", bg = "#add8e6")
+        annual = LabelFrame(PerformanceCanvas, text = "annual", bg = "#add8e6")
+        annualtext = Label(annual, text = "annual stats", bg = "#add8e6")
 
-        Categories = db.execute("SELECT Category FROM Inventory")
-        StockCat = []
-        for x in Categories:
-            if max(x) != "" or max(x)!="None":
-                StockCat.append(max(x))
-        Parent.Category = ttk.Combobox(QuickAddFrame,width = 6)
-        StockCat = sorted(list(set(StockCat)))
-        Parent.Category["values"] = StockCat
+        PerformanceCanvas.pack(padx = 5, pady= (5,10))
+        PerformanceTitle.pack(padx = 5, pady = 5)  
+        daily.pack(side = LEFT, padx = 25)
+        monthly.pack(side = LEFT, padx = 25, pady = 5)
+        annual.pack(side = LEFT, padx = 25, pady = 5)
+        dailytext.pack()
+        monthlytext.pack()
+        annualtext.pack()
 
-        #Parent.Category.bind("<Configure>", lambda: self.CheckWidth(StockCat))
-        Parent.Category.bind("<<ComboboxSelected>>",Parent.ActivateAndFillItemBox)
-           
-        Parent.Quantity = Entry(QuickAddFrame)
-        Parent.UnitPrice = Label(QuickAddFrame,bg="#add8e6") 
-        Parent.Gross = Label(QuickAddFrame,bg="#add8e6")  
-        Parent.NetTotal = Label(QuickAddFrame,bg="#add8e6")  
-        Parent.Vat = Label(QuickAddFrame,bg="#add8e6")
-        Parent.StateLabel = Label(QuickAddFrame,bg="#add8e6")
-
-        Parent.Company.place(x=82,y=0)
-        Parent.Name.place(x=142,y=0)
-        Parent.Category.place(x=82,y=21)
-        Parent.Item.place(x=142,y=21)
-        Parent.Quantity.grid(row=2, column=1)
-        Parent.UnitPrice.grid(row=3, column=1)
-        Parent.Gross.grid(row = 4,column=1)
-        Parent.NetTotal.grid(row = 5,column=1)
-        Parent.Vat.grid(row = 6,column=1)
-        Parent.StateLabel.grid(row = 7,column=1)
+        FilterCanvas = Canvas(infoFrame, 
+            bg = "#add8e6", 
+            highlightthickness = 1, 
+            width = 375)
         
-        Parent.AddSale = ttk.Button(QuickAddFrame,text="Add Sale",command = lambda: Parent.CheckandConfirm(QuickAddFrame))
-        Parent.AddSale.grid(row=7)
+        FilterTitle = Label(FilterCanvas, text = "Filter", bg = "#add8e6", font = ("helvetica",18, "italic"))
+        FilterTitle.grid(row = 0, column = 0, columnspan = 4, pady=2)
+        ItemLabel = Label(FilterCanvas, text = "Item:", bg = "#add8e6")
+        ItemLabel.grid(row = 1, column=0, padx=5, pady = 5)
+        ItemCombobox = ttk.Combobox(FilterCanvas, width = 10)
+        ItemCombobox.grid(row=1, column=1)
+        CheckButton = Checkbutton(FilterCanvas, text = "CSL", bg="#add8e6")
+        CheckButton.grid(row=2, column=1)
+        CompanyLabel = Label(FilterCanvas, text = "Company:", bg = "#add8e6")
+        CompanyLabel.grid(row = 1, column=2, padx=5, pady = 5)
+        CompanyCombobox = ttk.Combobox(FilterCanvas, width = 10)
+        CompanyCombobox.grid(row=1, column=3, padx=5, pady = 5)
+        ApplyButton = ttk.Button(FilterCanvas, text = "Apply")
+        ApplyButton.grid(row = 2, column = 2, columnspan=2, padx=5, pady = 5)
+
+        FilterCanvas.pack(padx= 8, pady= 8)
+
+        ButtonCanvas = Canvas(infoFrame)
+
+        # Button Definitions
+        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = self.DisplayAllRecords)
+        self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
+        self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
+        self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
+        
+        # Button Placements
+        self.ShowRecordsButton.grid(row=0,column=0)
+        self.SelectRecordButton.grid(row=0,column=1)
+        self.DeleteClientButton.grid(row=0,column=2)
+        self.EditClientButton.grid(row=0,column=3)
+
+        ButtonCanvas.pack(side=BOTTOM, pady = 10, padx = 5)
+    
+        return infoFrame
+    
+    def InventoryInformationPane(self, master):
+    
+        infoFrame = Canvas(master, bg = "#add8e6")
+
+        # Frame Definitions
+        PopularItemsCanvas = Canvas(infoFrame,
+            bg = "#add8e6", 
+            highlightthickness = 1, 
+            width = 375)
+        FilterCanvas = Canvas(infoFrame, 
+            bg = "#add8e6", 
+            highlightthickness = 1, 
+            width = 375,
+            height = 50)
+        ButtonCanvas = Canvas(infoFrame)
+
+        # Widget Definitions
+        PopularTitle = Label(PopularItemsCanvas, text = "Popular Items",bg = "#add8e6", font = ("helvetica",18, "italic"))
+        WeeklyTop5 = LabelFrame(PopularItemsCanvas, text = "Weekly Sales Top 5", bg = "#add8e6")
+        LowItemsCanvas = Canvas(PopularItemsCanvas, highlightthickness=1, bg = "#add8e6")
+        TopSeller = Label(WeeklyTop5, text = "Screws: 284", bg = "#add8e6")
+        SecondSeller = Label(WeeklyTop5, text = "Fans: 104", bg = "#add8e6")
+        ThirdSeller = Label(WeeklyTop5, text = "Plumbing: 84", bg = "#add8e6")
+        FourthSeller = Label(WeeklyTop5, text = "Door Stops: 39", bg = "#add8e6")
+        FifthSeller = Label(WeeklyTop5, text = "Fertiliser: 20", bg = "#add8e6")
+        LowItemsTitle = Label(LowItemsCanvas, text = "Low Items", bg = "#add8e6")
+        LowItemsName = Label(LowItemsCanvas, text = "Item" , bg = "#add8e6")
+        LowItemsQuantity = Label(LowItemsCanvas, text = "Quantity", bg = "#add8e6")
+
+        FilterTitle = Label(FilterCanvas, text = "Filter", bg = "#add8e6", font = ("helvetica",18, "italic"))
+        ItemLabel = Label(FilterCanvas, text = "Item:", bg = "#add8e6")
+        ItemCombobox = ttk.Combobox(FilterCanvas, width = 10)
+        ApplyButton = ttk.Button(FilterCanvas, text = "Apply")
+
+        # Widget Placements
+        PopularTitle.pack(padx = 5, pady = 5) 
+        WeeklyTop5.pack(side = LEFT, padx = 25, pady = (5,10))
+        LowItemsCanvas.pack(side = RIGHT, padx = 5, pady = 5)
+        TopSeller.pack()
+        SecondSeller.pack()
+        ThirdSeller.pack()
+        FourthSeller.pack()
+        FifthSeller.pack()
+
+        LowItemsTitle.grid(row = 0, column = 0, columnspan = 2, pady=5)
+        LowItemsName.grid(row = 1, column = 0)
+        LowItemsQuantity.grid(row = 1, column = 1, padx = 5)
+
+        LowItemsDict = {
+            "Wicks": 30,
+            "Grub Screws": 10,
+            "Seeds": 3,
+            "Batteries": 6,
+            "Wall Plugs":1
+        }
+
+        for x in range(5):
+            for y in range(2):
+                if y % 2 == 0:
+                    itemname = list(LowItemsDict)[x]
+                    TextLabel = Label(LowItemsCanvas, text = "{0}".format(itemname),bg = "#add8e6")
+                else:
+                    Quantity = LowItemsDict[itemname]
+                    TextLabel = Label(LowItemsCanvas, text = "{0}".format(Quantity),bg = "#add8e6")
+                TextLabel.grid(row = x+2, column = y, padx = 2, pady = 2)
+                
+                
+        
+        FilterTitle.grid(row = 0, column = 0, columnspan = 4, pady=2)
+        ItemLabel.grid(row = 1, column=0, padx=5, pady = 5)
+        ItemCombobox.grid(row = 1, column = 1)
+        ApplyButton.grid(row = 1, column = 2, columnspan=2, padx=5, pady = 5)
+
+        # Button Definitions
+        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = self.DisplayAllRecords)
+        self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
+        self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
+        self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
+        
+        # Button Placements
+        self.ShowRecordsButton.grid(row=0,column=0)
+        self.SelectRecordButton.grid(row=0,column=1)
+        self.DeleteClientButton.grid(row=0,column=2)
+        self.EditClientButton.grid(row=0,column=3)
+
+        # Canvas Placements
+        PopularItemsCanvas.pack(padx = 5, pady= (5,10))
+        FilterCanvas.pack(padx= 8, pady= 8)
+        ButtonCanvas.pack(pady = 10, padx = 5)
+
+        return infoFrame
+    
+    def InvoiceInformationPane(self, master):
+        
+        # Canvas Definitions
+        rootCanvas = Canvas(master, bg = "#add8e6", width = 450, height = 280)
+        InfoCanvas = Canvas(rootCanvas, bg = "#add8e6", highlightthickness= 1)
+        ButtonCanvas = Canvas(rootCanvas)
+        #PictureCanvas = Canvas(rootCanvas)   
+
+        # Canvas Placements
+        ButtonCanvas.pack(side = BOTTOM, pady=8, padx = 20)
+        InfoCanvas.pack(side= RIGHT, padx= 30, pady= 25)
+        #PictureCanvas.pack(side = LEFT)
+
+        # Label Definitions
+        self.CFirstname = Label(InfoCanvas, text = "To be Paid",bg = "#add8e6")
+    
+        # Label Placements
+        self.CFirstname.pack(side = TOP, pady = (5,0))
+
+        # Button Definitions
+        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = self.DisplayAllRecords)
+        self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
+        self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
+        self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
+
+        # Button Placements
+        self.ShowRecordsButton.grid(row=0,column=0)
+        self.SelectRecordButton.grid(row=0,column=1)
+        self.DeleteClientButton.grid(row=0,column=2)
+        self.EditClientButton.grid(row=0,column=3)
+
+        return rootCanvas
+
+
+    def DisplayAllRecords(self):
+
+        self.ShowRecordsButton.config(state = DISABLED)
+        self.SelectRecordButton.config(state = NORMAL)
+
+        CONN.execute("SELECT * FROM Customers")
+        Result = CONN.fetchall()
+        EachRec = []
+        for Record in Result:
+            EachRec.append((Record[1],Record[2],Record[3],Record[4],Record[5],Record[6],Record[7]))
+        for item in EachRec:
+            self.tree.insert('', 'end', values=item)
+        self.AmountOfClients.config(text="Amount of Clients: "+str(len(self.tree.get_children())))
+
+    def DeleteClient(self):
+        myExit =messagebox.askyesno(title="Quit",message="Are you sure you want to delete\nthis client?")
+        if myExit > 0:       
+            try:
+                items = self.self.tree.item(self.self.tree.selection())
+                selectedItem = self.self.tree.selection()[0]
+                self.self.tree.delete(selectedItem)
+
+                db = sqlite3.connect("Customers db.db")
+                c = db.cursor()
+                c.execute("SELECT* FROM Customers")
+                Result = c.fetchall()
+                for x in range(len(Result)):
+                    if Result[x][1] == items["values"][0] and Result[x][2] == items["values"][1] and Result[x][3] == items["values"][2]:
+                        CustID = Result[x][0]
+
+                db = sqlite3.connect("Customers db.db")
+                c = db.cursor()
+                query = "DELETE FROM Customers WHERE CustomerID = '%s';"%CustID
+                c.execute(query)
+                db.commit()
+                db.close()
+                
+            except:
+                selectedItem = "Deleted: None"
+            self.AmountOfClients.config(text="Records: "+str(len(self.self.tree.get_children())))
+            self.RemoveClient.config(state=DISABLED)
+            self.EditClient.config(state=DISABLED)
+     
+    def SelectClient(self):
+    
+        self.self.tree.selection_clear()
+        self.DeleteClientButton.config(state=ACTIVE)
+        self.EditClientButton.config(state=ACTIVE)
+
+        if self.SelectRecordButton["text"] == "Return":
+            self.SelectRecordButton.config(text="Select")
+        elif self.SelectRecordButton["text"] == "Select":
+            self.SelectRecordButton.config(text="Return")
+
+        items = self.self.tree.item(self.self.tree.selection())
+        self.CFirstname.config(text = "Firstname: "+items["values"][0][:20])
+        self.CLastname.config(text = "Lastname: "+items["values"][1][:20])
+        self.CCompany.config(text = "Company: "+items["values"][2][:20])
+        self.CTelephone.config(text = "Telephone: "+str(items["values"][3]))
+        self.CEmail.config(text = "Email: "+items["values"][4][:20])
+        self.CAddress.config(text = "Address: "+items["values"][5][:20])
+        self.CPostcode.config(text = "Postcode: "+items["values"][6][:20])
+
+    def PopulateEditForm(self):
+    
+        self.Submit.config(text="Modify")
+        self.DeleteClientButton.config(state = DISABLED)
+        
+        items = self.self.tree.item(self.self.tree.selection())
+        self.self.tree.delete(*self.self.tree.get_children())
+
+        self.Firstname.insert(0,items["values"][0])
+        self.Lastname.insert(0,items["values"][1])
+        self.CompanyEntry.insert(0,items["values"][2])
+        self.ContactNum.insert(0,items["values"][3])
+        self.Email.insert(0,items["values"][4])
+        self.Address.insert(0,items["values"][5])
+        self.Postcode.insert(0,items["values"][6])
+    
+    def AddClientForm(self,master):
+        
+        AddClient = Canvas(master, bg = "#add8e6", width = 310, height = 240)
+
+        # Label Definitions/Placements
+        Label(AddClient, text="First Name",bg = "#add8e6" ).grid(row=0, pady=(5,0))
+        Label(AddClient, text="Last Name",bg = "#add8e6" ).grid(row=1)
+        Label(AddClient, text="Company",bg = "#add8e6" ).grid(row=2)
+        Label(AddClient, text="Contact Number",bg = "#add8e6" ).grid(row=3, padx = (5,0))
+        Label(AddClient, text="Email",bg = "#add8e6" ).grid(row=4)
+        Label(AddClient, text="Address",bg = "#add8e6" ).grid(row=5)
+        Label(AddClient, text="Postcode",bg = "#add8e6" ).grid(row=6)
+        self.Submit = ttk.Button(AddClient, text="Add Client", command =
+                                 lambda:self.InputMask(master, AddClient, "", "Customers"))
+        self.Submit.grid(row=7,pady=(0,8))
+
+        # Entry Definitions
+        self.Firstname = ttk.Entry(AddClient)
+        self.Lastname = ttk.Entry(AddClient)
+        self.CompanyEntry = ttk.Entry(AddClient)
+        self.ContactNum = ttk.Entry(AddClient)
+        self.Email = ttk.Entry(AddClient)
+        self.Address = ttk.Entry(AddClient)
+        self.Postcode = ttk.Entry(AddClient)
+        self.StateLabel = Label(AddClient, bg="#add8e6")
+
+        # Entry Placement
+        self.Firstname.grid(row=0, column=1, pady= (5,0), padx = (0,5))
+        self.Lastname.grid(row=1, column=1, pady = (2,0), padx = (0,5))
+        self.CompanyEntry.grid(row=2, column=1,  pady = (2,0), padx = (0,5))
+        self.ContactNum.grid(row=3, column=1, pady = (2,0), padx = (0,5))
+        self.Email.grid(row=4, column=1, pady = (2,0), padx = (0,5))
+        self.Address.grid(row=5, column=1, pady = (2,0), padx = (0,5))
+        self.Postcode.grid(row=6, column=1,  pady = (2,0), padx = (0,5))
+        self.StateLabel.grid(column=1,row=7,  pady = (2,0), padx = (0,5))
+
+        return AddClient
     
     def ActivateAndFillItemBox(self,event):
         db = sqlite3.connect("Customers db.db")
@@ -218,7 +569,7 @@ class Parent():
                 CSLCheck = "Y"
 
         c = db.cursor()
-        c.execute('''INSERT INTO Sales(OrderID,ProductID,Quantity,CoalSticksLogs)Values
+        c.execute('''INSERT INTO self(OrderID,ProductID,Quantity,CoalSticksLogs)Values
                   (?,?,?,?)''',(OrderID,ProdID,Parent.Quantity.get(),CSLCheck))
         db.commit()
         db.close()
@@ -288,60 +639,35 @@ class Parent():
         db.close()
 
         return OrderID
-        
-    def OpenClients(ClientButton):
-        pass
-        #NewWin = Customers(Tk())
-    def OpenSales():
-        pass
-        #NewWin = Sales(Tk())
-    def OpenCSL():
-        pass
-        #NewWin = CoalSticksLogs(Tk())
-    def OpenInvoices():
+     
         pass
         #NewWin = Invoices(Tk())
    
-    def TreeView(self,Header,tree,frame):
+    def TreeView(self, master, fields):
 
-        ScrollBar = ttk.Scrollbar(frame, orient='vertical', command=tree.yview)
-        ScrollBar.grid(row=0, column=1, sticky='ns',in_=frame)
-        tree.configure(yscrollcommand=ScrollBar.set)
+        treeFrame = Frame(master)
+        self.tree = ttk.Treeview(treeFrame, columns = fields, show = "headings")
+        self.tree.grid(row = 0, column=0, in_= treeFrame)
+        
+        ScrollBar = ttk.Scrollbar(treeFrame, orient='vertical', command=self.tree.yview)
+        ScrollBar.grid(row = 0, column = 1 , sticky='ns',in_= treeFrame)
+        self.tree.configure(yscrollcommand=ScrollBar.set)
 
-        frame.grid_columnconfigure(0, weight=1)
-        frame.grid_rowconfigure(0, weight=1)
+        width = 776
+        HeaderLength = 0
+        for x in fields:
+            HeaderLength += len(x)
+        
+        for x in range(len(fields)):
+            self.tree.column(fields[x],width=int(len(fields[x])/HeaderLength*width)-30)
+        
 
-        if Header[0] == "Product":
-            
-            width = 491
-            HeaderLength = 0
-            for x in Header:
-                HeaderLength += len(x)
-            
-            tree.column(Header[0],width=int(len(Header[0])/HeaderLength*width)+40)
-            tree.column(Header[1],width=int(len(Header[1])/HeaderLength*width)-20)
-            tree.column(Header[2],width=int(len(Header[2])/HeaderLength*width)-50)
-            tree.column(Header[3],width=int(len(Header[3])/HeaderLength*width)+20)
-            tree.column(Header[4],width=int(len(Header[4])/HeaderLength*width)+10)
-            
-        else:   
-            width = 734
-            HeaderLength = 0
-            for x in Header:
-                HeaderLength += len(x)
-            
-            tree.column(Header[0],width=int(len(Header[0])/HeaderLength*width)-30)
-            tree.column(Header[1],width=int(len(Header[1])/HeaderLength*width))
-            tree.column(Header[2],width=int(len(Header[2])/HeaderLength*width)+20)
-            tree.column(Header[3],width=int(len(Header[3])/HeaderLength*width)-80)
-            tree.column(Header[4],width=int(len(Header[4])/HeaderLength*width)+90)
-            tree.column(Header[5],width=int(len(Header[5])/HeaderLength*width))
-            tree.column(Header[6],width=int(len(Header[6])/HeaderLength*width))
+        for col in fields:
+            self.tree.heading(col, text=col.title(), anchor = "w",command=lambda c=col: self.SortRecords(c,1,fields,self.tree))
 
-        for col in Header:
-            tree.heading(col, text=col.title(), anchor = "w",command=lambda c=col: self.SortRecords(c,1,Header,tree))
+        return treeFrame
 
-    def SortRecords(self,col, descending,table_header,tree):
+    def SortRecords(self,col, descending,table_header, tree):
         List = []
         for child in tree.get_children(''):
             List.append((tree.set(child,0),tree.set(child,1),
@@ -365,11 +691,11 @@ class Parent():
                     List[i] = List[i+1]
                     List[i+1] = temp
             passnum = passnum-1
-        tree.delete(*tree.get_children()) 
+        self.tree.delete(*self.tree.get_children()) 
         for item in List:
-            tree.insert('', 'end', values=item) 
-        tree.heading(col, command=lambda c=col:self.SortRecords
-                     (c,int(not descending),table_header,tree))
+            self.tree.insert('', 'end', values=item) 
+        self.tree.heading(col, command=lambda c=col:self.SortRecords
+                     (c,int(not descending),table_header,self.tree))
 
     def CheckWidth(List1):
         LongestWord = 0
@@ -419,22 +745,151 @@ class Parent():
                                         self.ConfirmButton.grid(column = 1, row = 7)
                                         #self.Submit.config(text = "Edit",command = lambda:Customers.Reset(self,"Edit",grid))
                                 else:
-                                    self.StateLabel.config(text= "Error: Address",fg="red")
+                                    self.StateLabel.config(text= "Error: Address", fg="red")
                             else:
-                                self.StateLabel.config(text= "Error: Company",fg="red")
+                                self.StateLabel.config(text= "Error: Company", fg="red")
                         else:
-                            self.StateLabel.config(text= "Error: Surname",fg="red")
+                            self.StateLabel.config(text= "Error: Surname", fg="red")
                     else:
-                        self.StateLabel.config(text= "Error: Firstname",fg="red")
+                        self.StateLabel.config(text= "Error: Firstname", fg="red")
                 else:
-                    self.StateLabel.config(text= "Error: Postcode",fg="red")
+                    self.StateLabel.config(text= "Error: Postcode", fg="red")
             else:
-                self.StateLabel.config(text= "Error: Email",fg="red")
+                self.StateLabel.config(text= "Error: Email", fg="red")
         else:
-            self.StateLabel.config(text= "Error: Contact Number",fg="red")
+            self.StateLabel.config(text= "Error: Contact Number", fg="red")
+
+    def AddSalesForm(self, master):
+        
+        AddSaleCanvas = Canvas(master, highlightthickness = 1, bg = "#add8e6", width = 300, height = 300)
+        
+        # Label Definitions
+        Label(AddSaleCanvas, text="Company", bg="#add8e6").grid(row=1, pady = 2)
+        Label(AddSaleCanvas, text="Client", bg="#add8e6").grid(row=2, pady = 2)
+        Label(AddSaleCanvas, text="Category", bg="#add8e6").grid(row=3, pady = 2)
+        Label(AddSaleCanvas, text="Item", bg="#add8e6").grid(row=4, pady = 2)
+        Label(AddSaleCanvas, text = "Quantity", bg="#add8e6").grid(row=5, pady = 2)
+        Label(AddSaleCanvas, text = "Unit Price", bg="#add8e6").grid(row=6, pady = 2)
+        Label(AddSaleCanvas, text = "Total", bg="#add8e6").grid(row=7, pady = 2)
+
+        self.CheckButton = Checkbutton(AddSaleCanvas, text = "CSL?", bg="#add8e6")
+        self.Item = ttk.Combobox(AddSaleCanvas, state = DISABLED, width = 20)
+        self.Name = ttk.Combobox(AddSaleCanvas, state = DISABLED, width = 20)
+
+        db = sqlite3.connect("Customers.db")
+        Link = db.cursor()
+
+        self.Company = ttk.Combobox(AddSaleCanvas, width = 20)
+        Companies = db.execute("SELECT Company FROM Customers")
+        CompanyValues = []
+        for x in Companies:
+            if max(x) != "":
+                CompanyValues.append(max(x))
+        CompanyValues = sorted(list(set(CompanyValues)))
+        self.Company["values"] = CompanyValues
+        
+        self.Company.bind("<Configure>",Parent.CheckWidth(CompanyValues))
+        self.Company.bind("<<ComboboxSelected>>",self.ActivateAndFillNameBox)
+        
+        self.Category = ttk.Combobox(AddSaleCanvas,width = 20)
+        Categories = db.execute("SELECT Category FROM Inventory")
+        StockCat = []
+        for x in Categories:
+            if max(x) != "" or max(x)!="None":
+                StockCat.append(max(x))
+        StockCat = sorted(list(set(StockCat)))
+        self.Category["values"] = StockCat
+
+        self.Category.bind("<Configure>",Parent.CheckWidth(StockCat))
+        self.Category.bind("<<ComboboxSelected>>",self.ActivateAndFillItemBox)
+
+        self.Quantity = ttk.Entry(AddSaleCanvas,width = 20)
+        self.UnitPrice = Label(AddSaleCanvas,bg="#add8e6")  
+        self.Total = Label(AddSaleCanvas,bg="#add8e6")  
+        self.StateLabel = Label(AddSaleCanvas,width = 10,bg="#add8e6")
+        self.UniqueIDRepeat = True
+        self.AddSale = ttk.Button(AddSaleCanvas,text="Add Sale",command = lambda: self.CheckandConfirm(QuickAddFrame,self.UniqueIDRepeat))
+        self.Confirm = ttk.Button(AddSaleCanvas,state=DISABLED,text = "Confirm")
+
+        self.CheckButton.grid(row = 0,column=1,columnspan = 2, pady = (5,0), padx = 2)
+        self.Company.grid(row = 1,column=1,columnspan = 2, pady = 2, padx = 2)
+        self.Name.grid(row = 2,column=1,columnspan = 2, pady = 2, padx = 2)
+        self.Category.grid(row = 3,column=1,columnspan = 2, pady = 2, padx = 2)
+        self.Item.grid(row = 4,column=1,columnspan = 2, pady = 2, padx = 2)
+        self.Quantity.grid(row = 5,column=1,columnspan = 2, pady = 2, padx = 2)
+        self.UnitPrice.grid(row = 6,column =1, pady = 2, padx = 2)
+        self.Total.grid(row = 7,column=1, pady = 2, padx = 2)
+        self.AddSale.grid(row=8, padx = 1, pady = 2)
+        self.Confirm.grid(row=8,column=1, padx=(0,5), pady = 2)
+        self.StateLabel.grid(row = 8,column=2, padx = 1, pady = 2)  
+
+        return AddSaleCanvas  
+
+    def AddInventoryForm(self, master):
+        
+        AddItemCanvas = Canvas(master, highlightthickness = 1, bg = "#add8e6", width = 300, height = 300)
+        
+        # Widget Definitions
+        TotalItemsLabel = Label(AddItemCanvas, text = "Total Items: 0", bg = "#add8e6")
+        AddItemsTitle = Label(AddItemCanvas, text = "Add Items",bg = "#add8e6", font = ("Helvetica", 18, "bold"))
+        CategoryLabel = Label(AddItemCanvas, text = "Category", bg="#add8e6")
+        DescriptionLabel = Label(AddItemCanvas, text= "Description", bg="#add8e6")
+        UnitPriceLabel = Label(AddItemCanvas, text="Unit Price", bg="#add8e6")
+        CategoryCombobox = ttk.Combobox(AddItemCanvas, state = DISABLED, width = 20)
+        DescriptionEntry = ttk.Entry(AddItemCanvas,width = 20)
+        UnitPriceEntry = ttk.Entry(AddItemCanvas,width = 20)
+        StateLabel = Label(AddItemCanvas, width = 10, bg="#add8e6")
+        self.UniqueIDRepeat = True
+        AddSaleButton = ttk.Button(AddItemCanvas,text="Add Item")
+        ConfirmButton= ttk.Button(AddItemCanvas,state=DISABLED,text = "Confirm")
+
+        # Widget Placements
+        TotalItemsLabel.grid(row=0, column = 1, pady = 5)
+        AddItemsTitle.grid(row = 1, column=0, columnspan=3, pady = 5)
+        CategoryLabel.grid(row=2,column = 0, pady = 2)
+        DescriptionLabel.grid(row=3,column =0,  pady = 2)
+        UnitPriceLabel.grid(row=4,column = 0, pady = 2)
+        CategoryCombobox.grid(row = 2, column = 1, columnspan = 2, pady = 5)
+        DescriptionEntry.grid(row = 3, column = 1, columnspan = 2, pady = 5)
+        UnitPriceEntry.grid(row = 4, column = 1, columnspan = 2, pady = 5)
+        AddSaleButton.grid(row = 5, column = 0 , pady = 10, padx = (10,0))
+        ConfirmButton.grid(row = 5, column = 1, pady = 5)
+        StateLabel.grid(row = 5, column = 2, pady = 5)
+        
+
+        # db = sqlite3.connect("Customers.db")
+        # Link = db.cursor()
+
+        # self.Company = ttk.Combobox(AddSaleCanvas, width = 20)
+        # Companies = db.execute("SELECT Company FROM Customers")
+        # CompanyValues = []
+        # for x in Companies:
+        #     if max(x) != "":
+        #         CompanyValues.append(max(x))
+        # CompanyValues = sorted(list(set(CompanyValues)))
+        # self.Company["values"] = CompanyValues
+        
+        # self.Company.bind("<Configure>",Parent.CheckWidth(CompanyValues))
+        # self.Company.bind("<<ComboboxSelected>>",self.ActivateAndFillNameBox)
+        
+        # self.Category = ttk.Combobox(AddSaleCanvas,width = 20)
+        # Categories = db.execute("SELECT Category FROM Inventory")
+        # StockCat = []
+        # for x in Categories:
+        #     if max(x) != "" or max(x)!="None":
+        #         StockCat.append(max(x))
+        # StockCat = sorted(list(set(StockCat)))
+        # self.Category["values"] = StockCat
+
+        # self.Category.bind("<Configure>",Parent.CheckWidth(StockCat))
+        # self.Category.bind("<<ComboboxSelected>>",self.ActivateAndFillItemBox)
+
+        
+        
+        return AddItemCanvas  
 
 if __name__ == "__main__":
-    root = Tk()
+    root = ThemedTk(theme = "arc")
     MainWindow = Parent(root)
     root.mainloop()
 
