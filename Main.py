@@ -17,7 +17,6 @@ class Parent():
         self.master = master
 
         # Define windows properties
-        master.config(bg = "black")
         master.resizable(0,0)
         master.geometry('%dx%d' % (700, 700))
         master.title("DIY Digitised")
@@ -33,11 +32,12 @@ class Parent():
             width = 15, 
             foreground = "black",
             font = ("Helvetica", 13, "italic"),
-            padding = (10, 10, 10, 10)
+            padding = (25, 10, 25, 10)
         )
         style.map("TNotebook", background = [("selected","#B7E9F7")])
         style.map("TNotebook.Tab",
-            expand = [("selected", [-5, 0, -5, 0])] 
+            expand = [("selected", [-5, 0, -5, 0])], 
+            background = [("selected","red")]
         )
     
         # style.theme_create("custom_tabs", parent = "alt", settings = {
@@ -66,37 +66,81 @@ class Parent():
         
 
         # Parent Widget Definitions
-        notebook = ttk.Notebook(master, padding = 3)
-        CustomersFrame = Frame(notebook, bg = "#B7E9F7")
-        SalesFrame = Frame(notebook, bg = "#B7E9F7")
-        InvoicesFrame = Frame(notebook, bg = "#B7E9F7")
-        InventoryFrame = Frame(notebook, bg = "#B7E9F7")
-    
-        # Populate Frames
-        self.PopulateCustomersFrame(CustomersFrame)
-        self.PopulateSalesFrame(SalesFrame)
-        self.PopulateInventoryFrame(InventoryFrame)
-        self.PopulateInvoicesFrame(InventoryFrame)
-        
+        self.notebook = ttk.Notebook(master, padding = 3)
+        self.notebook.bind("<<NotebookTabChanged>>", self.loadOnClick)
+
+        self.CustomersFrame = Frame(self.notebook, bg = "#B7E9F7")
+        self.SalesFrame = Frame(self.notebook, bg = "#B7E9F7")
+        self.InventoryFrame = Frame(self.notebook, bg = "#B7E9F7")
+        self.InvoicesFrame = Frame(self.notebook, bg = "#B7E9F7")
+
         # Notebook/Frame Placement Rules
-        notebook.pack()
-        CustomersFrame.pack(fill = 'both', expand= True)
-        SalesFrame.pack(fill = 'both', expand= True)
-        InvoicesFrame.pack(fill = 'both', expand= True)
-        InventoryFrame.pack(fill = 'both', expand= True)
+        self.notebook.pack()
+        self.CustomersFrame.pack(fill = 'both', expand= True)
+        self.SalesFrame.pack(fill = 'both', expand= True)
+        self.InvoicesFrame.pack(fill = 'both', expand= True)
+        self.InventoryFrame.pack(fill = 'both', expand= True)
 
         # Add frames to the Notebook
-        notebook.add(CustomersFrame, text = "Customers")
-        notebook.add(SalesFrame, text = "Sales")
-        notebook.add(InventoryFrame, text = "Inventory")
-        notebook.add(InvoicesFrame, text = "Invoices")
+        self.notebook.add(self.CustomersFrame, text = "Customers")
+        self.notebook.add(self.SalesFrame, text = "Sales")
+        self.notebook.add(self.InventoryFrame, text = "Inventory")
+        self.notebook.add(self.InvoicesFrame, text = "Invoices")
+        
+    # Load tab data only when the tab is selected, Remove all other data
+    def loadOnClick(self,event):
+
+        # Customer Tab Selected
+        if str(self.notebook.index(self.notebook.select())) == "0":  
+            # Reset all other tabs before populating new tab
+            for x in self.CustomersFrame.winfo_children():
+                x.destroy()
+            for x in self.SalesFrame.winfo_children():
+                x.destroy()
+            for x in self.InventoryFrame.winfo_children():
+                x.destroy()
+
+            self.PopulateCustomersFrame(self.CustomersFrame)
+
+        # Sales Tab Selected
+        elif str(self.notebook.index(self.notebook.select())) == "1":
+            # Reset all other tabs before populating new tab
+            for x in self.CustomersFrame.winfo_children():
+                x.destroy()
+            for x in self.InvoicesFrame.winfo_children():
+                x.destroy()
+            for x in self.InventoryFrame.winfo_children():
+                x.destroy()
+            self.PopulateSalesFrame(self.SalesFrame)
+            
+        # Inventory Tab Selected
+        elif str(self.notebook.index(self.notebook.select())) == "2":
+            # Reset all other tabs before populating new tab
+            for x in self.CustomersFrame.winfo_children():
+                x.destroy()
+            for x in self.SalesFrame.winfo_children():
+                x.destroy()
+            for x in self.InvoicesFrame.winfo_children():
+                x.destroy()
+            self.PopulateInventoryFrame(self.InventoryFrame)
+
+        # Invoices Tab Selected
+        elif str(self.notebook.index(self.notebook.select())) == "3":
+            # Reset all other tabs before populating new tab
+            for x in self.CustomersFrame.winfo_children():
+                x.destroy()
+            for x in self.SalesFrame.winfo_children():
+                x.destroy()
+            for x in self.InventoryFrame.winfo_children():
+                x.destroy()
+            self.PopulateInvoicesFrame(self.InvoicesFrame)  
 
     def PopulateCustomersFrame(self, Window):
 
         c = DB.execute("SELECT * FROM Customers")
         fields = [description[0] for description in c.description]
 
-        self.TreeView(Window, fields).pack(side = BOTTOM, padx= 5, pady= 5)
+        self.TreeView(Window, fields).pack(side = BOTTOM)
         self.CustomerInformationPane(Window).pack(side = LEFT, pady = 5, padx = 5)
         self.AddClientForm(Window).pack(side = RIGHT)
     
@@ -114,7 +158,7 @@ class Parent():
         c = DB.execute("SELECT * FROM Inventory")
         fields = [description[0] for description in c.description]
 
-        self.TreeView(Window, fields).pack(side = BOTTOM, padx = 5, pady = 5)
+        self.TreeView(Window, fields).pack(side = BOTTOM)
         self.AddInventoryForm(Window).pack(side = RIGHT)
         self.InventoryInformationPane(Window).pack(anchor = NW, padx = 2, pady = 2)
 
@@ -123,7 +167,7 @@ class Parent():
         c = DB.execute("SELECT * FROM Invoices")
         fields = [description[0] for description in c.description]
 
-        self.TreeView(Window, fields).pack(side = BOTTOM, padx = 5, pady = 5)
+        self.TreeView(Window, fields).pack(side = BOTTOM)
         #self.AddInventoryForm(Window).pack(side = RIGHT)
         self.InvoiceInformationPane(Window).pack(anchor = NW, padx = 2, pady = 2)
 
@@ -162,12 +206,11 @@ class Parent():
         self.AmountOfClients.pack(side = TOP, pady = (0,5), padx = 5)
 
         # Button Definitions
-        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = self.DisplayAllRecords)
+        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = lambda: self.DisplayAllRecords("Customers"))
         self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
         self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
         self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
         
-
         # Button Placements
         self.ShowRecordsButton.grid(row=0,column=0)
         self.SelectRecordButton.grid(row=0,column=1)
@@ -227,7 +270,7 @@ class Parent():
         ButtonCanvas = Canvas(infoFrame)
 
         # Button Definitions
-        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = self.DisplayAllRecords)
+        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = lambda: self.DisplayAllRecords("Sales"))
         self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
         self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
         self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
@@ -316,7 +359,7 @@ class Parent():
         ApplyButton.grid(row = 1, column = 2, columnspan=2, padx=5, pady = 5)
 
         # Button Definitions
-        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = self.DisplayAllRecords)
+        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = lambda: self.DisplayAllRecords("Inventory"))
         self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
         self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
         self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
@@ -354,7 +397,7 @@ class Parent():
         self.CFirstname.pack(side = TOP, pady = (5,0))
 
         # Button Definitions
-        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = self.DisplayAllRecords)
+        self.ShowRecordsButton = ttk.Button(ButtonCanvas, text = "Show clients", command = lambda: self.DisplayAllRecords("Invoices"))
         self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
         self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
         self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
@@ -367,19 +410,16 @@ class Parent():
 
         return rootCanvas
 
-
-    def DisplayAllRecords(self):
+    # Populate Tableview for each tab     
+    def DisplayAllRecords(self, table):
 
         self.ShowRecordsButton.config(state = DISABLED)
         self.SelectRecordButton.config(state = NORMAL)
 
-        CONN.execute("SELECT * FROM Customers")
+        CONN.execute("SELECT * FROM {0}".format(table))
         Result = CONN.fetchall()
-        EachRec = []
         for Record in Result:
-            EachRec.append((Record[1],Record[2],Record[3],Record[4],Record[5],Record[6],Record[7]))
-        for item in EachRec:
-            self.tree.insert('', 'end', values=item)
+            self.tree.insert('', 'end', values=Record)
         self.AmountOfClients.config(text="Amount of Clients: "+str(len(self.tree.get_children())))
 
     def DeleteClient(self):
@@ -413,7 +453,7 @@ class Parent():
      
     def SelectClient(self):
     
-        self.self.tree.selection_clear()
+        self.tree.selection_clear()
         self.DeleteClientButton.config(state=ACTIVE)
         self.EditClientButton.config(state=ACTIVE)
 
@@ -591,33 +631,7 @@ class Parent():
                               Parent.AddNew(QuickAddFrame))
         Parent.Vat.config(text = "")
         Parent.StateLabel.config(text = "Sale Added!!")
-
-    def AddNew(Parent,QuickAddFrame):
-        Parent.Confirm.destroy()
-        Parent.Company.config(state=ACTIVE)
-        Parent.Category.config(state=ACTIVE)
-        Parent.Quantity.config(state = NORMAL)
-        Parent.UnitPrice.config(text = "")
-        Parent.Gross.config(text = "")
-        Parent.NetTotal.config(text = "")
-        Parent.Vat.config(text = "")
-        Parent.StateLabel.config(text = "")
-        Parent.AddSale.config(text = "Add sale",command = lambda:
-                              Parent.CheckandConfirm(QuickAddFrame))
         
-    def ProduceTitleCanvas(self, master, text = "Parent"): 
-        TCanvas = Canvas(master)
-
-        TCanvas.create_rectangle(1,1,0,0,fill="#96C8A2",width = 3,outline="grey")
-
-        WindowLabel = Label(TCanvas,text = text,font = TITLE_FONT,bg="#96C8A2")
-        WindowLabel.pack(side=LEFT,padx = 3) 
-        
-        ReturnButton = ttk.Button(TCanvas,text="Return >",command = master.destroy)
-        ReturnButton.pack(side=RIGHT,padx=9)
-
-        return TCanvas
-    
     def ProduceUniqueOrderID(Name):
         now = datetime.datetime.now()
         Date = str(now.day)+"/"+str(now.month)+"/"+str(now.year)
@@ -653,17 +667,16 @@ class Parent():
         ScrollBar.grid(row = 0, column = 1 , sticky='ns',in_= treeFrame)
         self.tree.configure(yscrollcommand=ScrollBar.set)
 
-        width = 776
+        width = 655
         HeaderLength = 0
         for x in fields:
             HeaderLength += len(x)
         
         for x in range(len(fields)):
-            self.tree.column(fields[x],width=int(len(fields[x])/HeaderLength*width)-30)
+            self.tree.column(fields[x],width=int(len(fields[x])/HeaderLength*width))
         
-
         for col in fields:
-            self.tree.heading(col, text=col.title(), anchor = "w",command=lambda c=col: self.SortRecords(c,1,fields,self.tree))
+            self.tree.heading(col, text=col.title(), anchor = "n", command=lambda c=col: self.SortRecords(c,1,fields,self.tree))
 
         return treeFrame
 
