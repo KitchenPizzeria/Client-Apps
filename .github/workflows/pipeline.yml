@@ -1,0 +1,21 @@
+name : Python Pipeline
+
+on: push
+
+jobs:
+    test:
+        runs-on: macos-latest
+        steps:
+            - uses: actions.checkout@v2
+            - run: python main.py
+            
+    build:
+        needs: [test]
+        runs-on: macos-latest
+        steps:
+            - uses: upload-artifact
+              with:
+                name: hello
+                path: .
+    
+    
