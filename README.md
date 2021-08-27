@@ -1,5 +1,6 @@
  ![DIY DIGITISED](https://user-images.githubusercontent.com/70120980/131112660-ffe02c6d-5540-4825-8175-af3d871e76e3.png)
  ![example branch parameter](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=Main)
+ ![example workflow](https://github.com/actions/workflows/main.yml/badge.svg)
  
 
 ## The Client
