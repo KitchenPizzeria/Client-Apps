@@ -6,6 +6,9 @@
 ### eBay Site:
 https://www.ebay.co.uk/str/hootflipflopandflyatkibworthdiy
 
+### Global Ranking:
+https://www.topratedseller.com/ebay?name=hootflipflopandfly
+
 This application has been produced for Kibworth DIY hardware store, with the aim to help the owner modernise his shop and workflow. Before this solution, all shop sales have to be put through the till but with no record of what specifically has been sold since only the revenue taken is recorded. If any item of the shop is low, this would be found when it has run out and there is no record of incoming products for the store, this is because the owner will often visit car boot/auction fairs and just bring things back for the shop.
 
 ## Understanding The Solution
