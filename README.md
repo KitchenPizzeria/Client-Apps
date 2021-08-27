@@ -3,11 +3,6 @@
  ![Main Branch Badge](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=Main)
  ![Workflow Badge](https://github.com/KitchenPizzeria/DIY-DIGITSED/actions/workflows/Main.yml/badge.svg)
  
- <p align="center">
-  <img width="460" height="300" src="DIY DIGITISED.PNG">
-</p>
- 
-
 ## The Client
 
 ### eBay Site:
