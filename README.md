@@ -1,6 +1,7 @@
+![DIY DIGITISED](https://user-images.githubusercontent.com/70120980/131133443-8f1dfc97-6ef4-4eaa-998f-1760bf5aa160.png)
  
- <div style="text-align:center"><img src="Users/joseph/Desktop/clonedRepos/DIY-DIGITISED" /></div>.
  ![Main Branch Badge](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=Main)
+ 
  ![Workflow Badge](https://github.com/KitchenPizzeria/DIY-DIGITSED/actions/workflows/Main.yml/badge.svg)
  
 
