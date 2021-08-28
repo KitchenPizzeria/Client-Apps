@@ -1,5 +1,20 @@
-# DIY DIGITISED
+![DIY DIGITISED](https://user-images.githubusercontent.com/70120980/131133443-8f1dfc97-6ef4-4eaa-998f-1760bf5aa160.png)
+ 
+ ![Main Branch Badge](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=Main&style=shield)
+ 
+ ![example workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+ 
+ [![CircleCI](https://circleci.com/gh/KitchenPizzeria/DIY-DIGITISED.svg?style=shield)]
+
+ 
 ## The Client
+
+### eBay Site:
+https://www.ebay.co.uk/str/hootflipflopandflyatkibworthdiy
+
+### Global Ranking:
+https://www.topratedseller.com/ebay?name=hootflipflopandfly
+
 This application has been produced for Kibworth DIY hardware store, with the aim to help the owner modernise his shop and workflow. Before this solution, all shop sales have to be put through the till but with no record of what specifically has been sold since only the revenue taken is recorded. If any item of the shop is low, this would be found when it has run out and there is no record of incoming products for the store, this is because the owner will often visit car boot/auction fairs and just bring things back for the shop.
 
 ## Understanding The Solution
