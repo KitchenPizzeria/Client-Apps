@@ -1,6 +1,6 @@
 ![DIY DIGITISED](https://user-images.githubusercontent.com/70120980/131133443-8f1dfc97-6ef4-4eaa-998f-1760bf5aa160.png)
  
- ![Main Branch Badge](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=Main)
+ ![Main Branch Badge](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=Main&style=shield)
  
  ![example workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
  
