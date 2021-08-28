@@ -1,7 +1,9 @@
 ![DIY DIGITISED](https://user-images.githubusercontent.com/70120980/131133443-8f1dfc97-6ef4-4eaa-998f-1760bf5aa160.png)
  
  ![Main Branch Badge](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=Main)
- ![Workflow Badge](https://github.com/KitchenPizzeria/DIY-DIGITSED/actions/workflows/Main.yml/badge.svg)
+ ![Workflow Badge](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions/workflows/Main.yml/badge.svg)
+ [![CircleCI](https://circleci.com/gh/KitchenPizzeria/DIY-DIGITISED.svg?style=shield)]
+
  
 ## The Client
 
