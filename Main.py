@@ -87,13 +87,13 @@ class Parent():
         self.indexOfCurrentNotebooktab = self.notebook.index(self.notebook.select())
 
         if self.currentNotebooktab == 0:
-                self.PopulateCustomersFrame(self.CustomersFrame)
+            self.PopulateCustomersFrame(self.CustomersFrame)
         if self.currentNotebooktab == 1:
-                self.PopulateSalesFrame(self.SalesFrame)
+            self.PopulateSalesFrame(self.SalesFrame)
         if self.currentNotebooktab == 2:
-                self.PopulateInventoryFrame(self.InventoryFrame)
+            self.PopulateInventoryFrame(self.InventoryFrame)
         if self.currentNotebooktab == 3:
-                self.PopulateInvoicesFrame(self.InvoicesFrame)
+            self.PopulateInvoicesFrame(self.InvoicesFrame)
 
     def PopulateCustomersFrame(self, Window):
 
