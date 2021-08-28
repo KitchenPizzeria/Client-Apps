@@ -6,7 +6,6 @@ import datetime
 import re
 from ttkthemes import ThemedTk
 import numpy as np
-from NotebookTabEnum import Tabs
 
 BUTTON_FONT = ("Georgia",16)
 TITLE_FONT = ("Georgia",28)
@@ -28,12 +27,12 @@ class Parent():
 
         # Style for Notebook
         style = ttk.Style()
-        
+
         style.configure("TLabel", background = "#add8e6")
         style.configure("TNotebook", tabbackground = "#B7E9F7", tabposition = "N")
         style.configure(".", focuscolor = style.lookup('.', 'background'))
-        style.configure('TNotebook.Tab',  
-            width = 15, 
+        style.configure('TNotebook.Tab',
+            width = 15,
             bg = "red",
             foreground = "black",
             font = ("Helvetica", 13, "italic"),
@@ -43,7 +42,7 @@ class Parent():
         style.map("TNotebook", background = [("selected","#B7E9F7")])
 
         style.map("TNotebook.Tab",
-            expand = [("selected", [-8, 0, -8, -2])], 
+            expand = [("selected", [-8, 0, -8, -2])],
         )
 
         self.notebook = ttk.Notebook(master, padding = 3)
@@ -67,29 +66,34 @@ class Parent():
         self.notebook.add(self.SalesFrame, text = "Sales")
         self.notebook.add(self.InventoryFrame, text = "Inventory")
         self.notebook.add(self.InvoicesFrame, text = "Invoices")
-        
+
     def loadOnClick(self,event):
 
-        tabList = [self.CustomersFrame, self.SalesFrame, self.InventoryFrame, self.InvoicesFrame]
+        tabList = [
+            self.CustomersFrame,
+            self.SalesFrame,
+            self.InventoryFrame,
+            self.InvoicesFrame
+        ]
 
         # clear all widgets from starting tab
         startTab = tabList[self.currentNotebooktab]
 
         for x in startTab.winfo_children():
-                x.destroy()
+            x.destroy()
 
         # then update current tab and initialise all new widgets in destination tab
 
-        self.currentNotebooktab = self.notebook.index(self.notebook.select())
+        self.indexOfCurrentNotebooktab = self.notebook.index(self.notebook.select())
 
-        if self.currentNotebooktab == 0: 
+        if self.currentNotebooktab == 0:
                 self.PopulateCustomersFrame(self.CustomersFrame)
-        if self.currentNotebooktab == 1: 
+        if self.currentNotebooktab == 1:
                 self.PopulateSalesFrame(self.SalesFrame)
-        if self.currentNotebooktab == 2: 
+        if self.currentNotebooktab == 2:
                 self.PopulateInventoryFrame(self.InventoryFrame)
         if self.currentNotebooktab == 3:
-                self.PopulateInvoicesFrame(self.InvoicesFrame)  
+                self.PopulateInvoicesFrame(self.InvoicesFrame)
 
     def PopulateCustomersFrame(self, Window):
 
@@ -103,7 +107,7 @@ class Parent():
         backgroundCanvas = self.RoundedCorneredCanvas(self.CustomersFrame, width, height, 15, "#add8e6")
         InfoCanvas = Frame(backgroundCanvas, bg = "#add8e6")
         ButtonCanvas = Frame(backgroundCanvas, bg = "#add8e6")
-        #PictureCanvas = Canvas(rootCanvas)  
+        #PictureCanvas = Canvas(rootCanvas)
 
         # Canvas Placements
         ButtonCanvas.pack(side = BOTTOM, pady = 8, padx = 2)
@@ -119,7 +123,7 @@ class Parent():
         self.CAddress = Label(InfoCanvas, text = "Address: None",bg = "#add8e6")
         self.CPostcode = Label(InfoCanvas, text = "Postcode: None",bg = "#add8e6")
         self.AmountOfClients = Label(InfoCanvas, text = "Amount of Clients: 0  ",bg = "#add8e6")
-    
+
         # Label Placements
         self.CFirstname.pack(side = TOP, pady = (5,0))
         self.CLastname.pack(side = TOP)
@@ -135,21 +139,21 @@ class Parent():
         self.SelectRecordButton= ttk.Button(ButtonCanvas,width = 8, text = "Select", state = DISABLED, command = self.SelectClient)
         self.DeleteClientButton = ttk.Button(ButtonCanvas,width = 8, text = "Delete", state = DISABLED, command = self.DeleteClient)
         self.EditClientButton = ttk.Button(ButtonCanvas, width = 8,text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
-        
+
         # Button Placements
         self.ShowRecordsButton.grid(row=0,column=0, padx = 3)
         self.SelectRecordButton.grid(row=0,column=1, padx = 3)
         self.DeleteClientButton.grid(row=0,column=2, padx = 3)
         self.EditClientButton.grid(row=0,column=3, padx = 3)
 
-        
-  
+
+
         self.TreeView(Window, fields[1:], self.WindowWidth).pack(side = BOTTOM)
         self.AddClientForm(Window).pack(side = RIGHT, pady = 5)
         backgroundCanvas.place(x = 5, y = 5 , width = 380, height = 210)
- 
+
     def PopulateSalesFrame(self, Window):
-    
+
         c = DB.execute("SELECT * FROM Sales")
         fields = [description[0] for description in c.description]
 
@@ -160,35 +164,35 @@ class Parent():
         self.height = 250
         self.width = 370
         self.roundedRectangleCanvas = Canvas(Window, highlightthickness = 0, bg= "#B7E9F7")
-        
+
 
         self.RoundedCorneredCanvas(self.roundedRectangleCanvas,5, 5, self.width - 5, self.height-5, 20, "#ffffff")
         self.SalesInformationPane().pack(side=LEFT, padx = 2, pady =2)
 
         self.roundedRectangleCanvas.place(x = 5, y = 5, height = self.height, width = self.width)
-        
+
     def PopulateInventoryFrame(self, Window):
 
         c = DB.execute("SELECT * FROM Inventory")
         fields = [description[0] for description in c.description]
 
         PopularItemsCanvas = self.RoundedCorneredCanvas(self.InventoryFrame, 370, 215, 15, "#add8e6")
-        
+
 
         # Popular Items Canvas
         # Definitions
         PopularItemsTitle = Label(PopularItemsCanvas, text = "Popular Items", bg = "#add8e6" , font = ("Helvetica", 15, "bold"))
-        
+
         TableFrame = Frame(PopularItemsCanvas, bg = "#add8e6")
         EbayLowItem = self.TreeView(TableFrame, ["Item", "Quantity"], 175, height = 2.5, scrollpresent=False)
         ShopLowItem = self.TreeView(TableFrame, ["Item", "Quantity"], 175, height = 2.5, scrollpresent=False)
-        
+
         ButtonFrame = Frame(PopularItemsCanvas, bg = "#add8e6" )
         ShowItemsButton = ttk.Button(ButtonFrame,width = 8,text = "Show",command = lambda: self.DisplayAllRecords("Customers"))
         SelectItemButton= ttk.Button(ButtonFrame,width = 8, text = "Select", state = DISABLED, command = self.SelectClient)
         DeleteItemButton = ttk.Button(ButtonFrame,width = 8, text = "Delete", state = DISABLED, command = self.DeleteClient)
         EditItemButton = ttk.Button(ButtonFrame, width = 8,text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
-     
+
         PopularItemsTitle.pack(side = TOP, fill = "x", padx = 6, pady = (5,0))
 
         TableFrame.pack(side = TOP)
@@ -205,7 +209,18 @@ class Parent():
 
         # Write Code to populate the low items tables
 
+        # ADD ITEMS CANVAS
         AddItemCanvas = self.RoundedCorneredCanvas(self.InventoryFrame, 201, 215, 15, "#add8e6")
+        Label(AddItemCanvas, text = "Add Item", font = "Helvetica 15 bold", bg = "#add8e6").grid(row = 0, columnspan=4, pady = 3)
+        Label(AddItemCanvas, text = "Company", bg = "#add8e6").grid(row = 1, column = 0, columnspan=2, pady = (10,5))
+        ttk.Combobox(AddItemCanvas, width = 8).grid(row = 1, column = 2, columnspan=2)
+        Label(AddItemCanvas, text = "Other: ", bg = "#add8e6").grid(row = 2, column = 0, columnspan=2, pady = 5)
+        ttk.Entry(AddItemCanvas, width = 8).grid(row = 2, column = 2, columnspan=2)
+        Label(AddItemCanvas, text = "Description: ", bg = "#add8e6").grid(row = 3, column = 0, columnspan=2, padx = 5, pady = 5)
+        ttk.Entry(AddItemCanvas, width = 8).grid(row = 3, column = 2, columnspan=2)
+        Label(AddItemCanvas, text = "Unit Price: ", bg = "#add8e6").grid(row = 4, column = 0, columnspan=2, pady = 5)
+        ttk.Entry(AddItemCanvas, width = 3).grid(row = 4, column= 2, columnspan = 1)
+        Label(AddItemCanvas, text = "error", foreground= "red", bg = "#add8e6").grid(row = 4, column = 3)
 
         self.TreeView(Window, fields[1:], self.WindowWidth).pack(side = BOTTOM)
         PopularItemsCanvas.place(x = 1, y = 1, width = 371, height = 216)
@@ -219,7 +234,7 @@ class Parent():
         toBePaidWidth = 226
         toBePaidHeight = 217
 
-        # WIDGET DEFINITIONS    
+        # WIDGET DEFINITIONS
         treeView = self.TreeView(Window, fields[1:], self.WindowWidth)
         LeftCanvas = self.RoundedCorneredCanvas(Window, toBePaidWidth, toBePaidHeight, 15, "#add8e6" )
         MiddleCanvas = self.RoundedCorneredCanvas(Window, toBePaidWidth, toBePaidHeight, 15, "#add8e6" )
@@ -240,12 +255,12 @@ class Parent():
 
         # MIDDLE CANVAS CONTENT
         # Definitions
-        MiddleCanvasTitle = Label(MiddleCanvas, text = "eBay To Be Paid", bg = "#add8e6", font = ("Helvetica", 15, "bold"))
-        
-        TableFrame = Frame(MiddleCanvas, bg = "#add8e6",  relief = "raised")
-        Text = Label(TableFrame, text = "Table of info here",font = "Arial 12 italic", bg = "#add8e6")
+        Label(MiddleCanvas, text = "eBay To Be Paid", bg = "#add8e6", font = ("Helvetica", 15, "bold")).pack(side = TOP, pady = (3,0))
+
+        self.TreeView(MiddleCanvas,["Item Sold", "Date", "Due"], 185, 1, scrollpresent=False).pack(side = TOP, pady = 3)
+
+
         filterCanvas = Frame(MiddleCanvas, bg = "#add8e6")
-        FilterTitle = Label(filterCanvas, text = "Filter", bg = "#add8e6")
         CompanyLabel = Label(filterCanvas, text = "Company:", bg = "#add8e6")
         CompanyComboBox = ttk.Combobox(filterCanvas, width = 9)
         DateFromLabel = Label(filterCanvas, text = "Date:", bg = "#add8e6")
@@ -256,13 +271,12 @@ class Parent():
         clearInvoicesButton = ttk.Button(filterCanvas, text = "Clear")
 
         # Placements
-        MiddleCanvasTitle.pack(side = TOP, pady = (5,0))
+
+        #TableFrame.pack(side = TOP, fill = "both", expand = True, padx = 5, pady = 5)
         ttk.Separator(MiddleCanvas, orient= "horizontal").pack(side = TOP)
-        TableFrame.pack(side = TOP, fill = "both", expand = True, padx = 5, pady = 5)
-        Text.pack(fill = "x", padx = 5)
+
         filterCanvas.pack(side = TOP, padx = 6, pady = (0,10))
 
-        FilterTitle.grid(row = 0, column = 0, columnspan=4, padx = 2, pady = 2)
         CompanyLabel.grid(row = 1, column = 0, columnspan=2, padx = 2, pady = 2)
         CompanyComboBox.grid(row = 1, column = 2, columnspan=2, padx = 2, pady = 2, sticky = "ew")
         DateFromLabel.grid(row = 2, column = 0, padx = 2, pady = 2)
@@ -288,34 +302,35 @@ class Parent():
         TotalAmountDue = Label(RightCanvas, text = "Total Amount Due: 0", bg = "#add8e6")
 
         RightCanvasTitle.pack(side = TOP, pady = (5,0))
-        
+
         CompanyLabel.grid(row = 0, column = 0, columnspan=2, padx = 2, pady = 2)
         CompanyComboBox.grid(row = 0, column = 2, columnspan=2, padx = 2, sticky = "ew")
         DateFromLabel.grid(row = 1, column = 0, padx = 2, pady = 2)
         DateFromEntry.grid(row = 1, column = 1, padx = 2, pady = 2)
         DateToLabel.grid(row = 1, column = 2, padx = 2, pady = 2)
-        DateToEntry.grid(row = 1, column = 3, padx = 2, pady = 2)
+        DateToEntry.grid(row = 1, column = 3, padx = 2, pady = 2, sticky = "ew")
         previewInvoiceButton.grid(row = 2, column = 0, columnspan=2, pady = 5, padx = 5)
-        
+
         TotalAmountDue.pack(side = BOTTOM, pady = (0,10))
         TotalInvoicesLabel.pack(side = BOTTOM)
         ttk.Separator(RightCanvas, orient = "horizontal").pack(side = BOTTOM, fill = "x", pady = 10, padx = 15)
         formCanvas.pack(side = BOTTOM, padx = 5)
         ttk.Separator(RightCanvas, orient = "horizontal").pack(side = BOTTOM, fill = "x", pady = 5, padx = 15)
-        
-          
+
+
         # WIDGET PLACEMENTS
         treeView.pack(side = BOTTOM)
         LeftCanvas.pack(side = LEFT, fill = "both", padx = 2, pady = 2)
         MiddleCanvas.pack(side = LEFT, fill = "both", padx = 2, pady = 2)
         RightCanvas.pack(side = LEFT, fill = "both", padx = 2, pady = 2)
-        
+
+
     def SalesInformationPane(self):
 
         infoFrame = Canvas(self.roundedRectangleCanvas, highlightthickness=0, bg = "#add8e6")
 
         PerformanceCanvas = Canvas(infoFrame,bg = "#add8e6", highlightthickness = 0, width = 375)
-        
+
         PerformanceTitle = Label(PerformanceCanvas, text = "Performance", bg = "#add8e6", font = ("helvetica",15, "italic"))
         PerformanceNotebook = ttk.Notebook(PerformanceCanvas, padding = 3)
         self.dailyFrame = Frame(PerformanceNotebook, bg = "#add8e6")
@@ -330,17 +345,17 @@ class Parent():
         PerformanceNotebook.add(self.annualFrame, text = "Annual")
 
         PerformanceCanvas.pack(padx = 5, pady= (5,10))
-        PerformanceTitle.pack(padx = 5, pady = 5) 
+        PerformanceTitle.pack(padx = 5, pady = 5)
         PerformanceNotebook.pack(fill = "x")
         self.dailyFrame.pack(fill = "both", expand = True)
         self.monthlyFrame.pack(fill = "both", expand = True)
         self.annualFrame.pack(fill = "both", expand = True)
 
-        FilterCanvas = Canvas(infoFrame, 
-            bg = "#add8e6", 
-            highlightthickness = 1, 
+        FilterCanvas = Canvas(infoFrame,
+            bg = "#add8e6",
+            highlightthickness = 1,
             width = 375)
-        
+
         FilterTitle = Label(FilterCanvas, text = "Filter", bg = "#add8e6", font = ("helvetica",18, "italic"))
         FilterTitle.grid(row = 0, column = 0, columnspan = 4, pady=2)
         ItemLabel = Label(FilterCanvas, text = "Item:", bg = "#add8e6")
@@ -365,7 +380,7 @@ class Parent():
         self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
         self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
         self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
-        
+
         # Button Placements
         self.ShowRecordsButton.grid(row=0,column=0)
         self.SelectRecordButton.grid(row=0,column=1)
@@ -373,21 +388,21 @@ class Parent():
         self.EditClientButton.grid(row=0,column=3)
 
         ButtonCanvas.pack(side=BOTTOM, pady = 10, padx = 5)
-    
+
         return infoFrame
-    
+
     def InventoryInformationPane(self, master):
-    
+
         infoFrame = Canvas(master, bg = "#add8e6")
 
         # Frame Definitions
         PopularItemsCanvas = Canvas(infoFrame,
-            bg = "#add8e6", 
-            highlightthickness = 1, 
+            bg = "#add8e6",
+            highlightthickness = 1,
             width = 375)
-        FilterCanvas = Canvas(infoFrame, 
-            bg = "#add8e6", 
-            highlightthickness = 1, 
+        FilterCanvas = Canvas(infoFrame,
+            bg = "#add8e6",
+            highlightthickness = 1,
             width = 375,
             height = 50)
         ButtonCanvas = Canvas(infoFrame)
@@ -411,7 +426,7 @@ class Parent():
         ApplyButton = ttk.Button(FilterCanvas, text = "Apply")
 
         # Widget Placements
-        PopularTitle.pack(padx = 5, pady = 5) 
+        PopularTitle.pack(padx = 5, pady = 5)
         WeeklyTop5.pack(side = LEFT, padx = 25, pady = (5,10))
         LowItemsCanvas.pack(side = RIGHT, padx = 5, pady = 5)
         TopSeller.pack()
@@ -441,9 +456,9 @@ class Parent():
                     Quantity = LowItemsDict[itemname]
                     TextLabel = Label(LowItemsCanvas, text = "{0}".format(Quantity),bg = "#add8e6")
                 TextLabel.grid(row = x+2, column = y, padx = 2, pady = 2)
-                
-                
-        
+
+
+
         FilterTitle.grid(row = 0, column = 0, columnspan = 4, pady=2)
         ItemLabel.grid(row = 1, column=0, padx=5, pady = 5)
         ItemCombobox.grid(row = 1, column = 1)
@@ -454,7 +469,7 @@ class Parent():
         self.SelectRecordButton= ttk.Button(ButtonCanvas, text = "Select", state = DISABLED, command = self.SelectClient)
         self.DeleteClientButton = ttk.Button(ButtonCanvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
         self.EditClientButton = ttk.Button(ButtonCanvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
-        
+
         # Button Placements
         self.ShowRecordsButton.grid(row=0,column=0)
         self.SelectRecordButton.grid(row=0,column=1)
@@ -467,11 +482,11 @@ class Parent():
         ButtonCanvas.pack(pady = 10, padx = 5)
 
         return infoFrame
-    
-    # Populate Tableview for each tab     
+
+    # Populate Tableview for each tab
     def DisplayAllRecords(self, table):
 
-        
+
         self.ShowRecordsButton.config(state = DISABLED)
         self.SelectRecordButton.config(state = NORMAL)
 
@@ -483,7 +498,7 @@ class Parent():
 
     def DeleteClient(self):
         myExit =messagebox.askyesno(title="Quit",message="Are you sure you want to delete\nthis client?")
-        if myExit > 0:       
+        if myExit > 0:
             try:
                 items = self.self.tree.item(self.self.tree.selection())
                 selectedItem = self.self.tree.selection()[0]
@@ -503,15 +518,15 @@ class Parent():
                 c.execute(query)
                 db.commit()
                 db.close()
-                
+
             except:
                 selectedItem = "Deleted: None"
             self.AmountOfClients.config(text="Records: "+str(len(self.self.tree.get_children())))
             self.RemoveClient.config(state=DISABLED)
             self.EditClient.config(state=DISABLED)
-     
+
     def SelectClient(self):
-    
+
         # self.tree.selection_clear()
         self.DeleteClientButton.config(state=ACTIVE)
         self.EditClientButton.config(state=ACTIVE)
@@ -532,10 +547,10 @@ class Parent():
         self.CPostcode.config(text = "Postcode: "+items["values"][6][:20])
 
     def PopulateEditForm(self):
-    
+
         self.Submit.config(text="Modify")
         self.DeleteClientButton.config(state = DISABLED)
-        
+
         items = self.self.tree.item(self.self.tree.selection())
         self.self.tree.delete(*self.self.tree.get_children())
 
@@ -546,9 +561,9 @@ class Parent():
         self.Email.insert(0,items["values"][4])
         self.Address.insert(0,items["values"][5])
         self.Postcode.insert(0,items["values"][6])
-    
+
     def AddClientForm(self,master):
-        
+
         AddClient = self.RoundedCorneredCanvas(master, 300, 240, 15, "#add8e6")
 
         # Label Definitions/Placements
@@ -584,7 +599,7 @@ class Parent():
         self.StateLabel.grid(column=1,row=7,  pady = (1,0), padx = (0,5))
 
         return AddClient
-    
+
     def ActivateAndFillItemBox(self,event):
         db = sqlite3.connect("Customers.db")
         Link = db.cursor()
@@ -598,18 +613,18 @@ class Parent():
         Parent.Item["values"] = Parent.StockItems
         Parent.Item.config(state = NORMAL)
         self.CheckWidth(Parent.StockItems)
-            
+
     def ActivateAndFillNameBox(self,event):
         db = sqlite3.connect("Customers.db")
         Link = db.cursor()
-        
+
         Parent.Names = []
         Names = db.execute("SELECT Firstname,Surname FROM Customers WHERE Company = '%s'"%Parent.Company.get())
         for x in Names:
             Name = x[0]+" "+x[1]
             if max(x)!="":
                 Parent.Names.append(Name)
-            
+
         Parent.Names = sorted(list(set(Parent.Names)))
         Parent.Name["values"] = Parent.Names
         Parent.Name.config(state=ACTIVE)
@@ -619,18 +634,18 @@ class Parent():
         db = sqlite3.connect("Customers.db")
         c = db.cursor()
         c.execute("SELECT * FROM Inventory")
-        result = c.fetchall() 
+        result = c.fetchall()
         for Record in result:
             if Record[2] == Parent.Item.get():
                 fetchPrice = float(Record[3])
-                                
+
         try:
             fetchQuan = float(Parent.Quantity.get())
             TotalPriceMoney = Decimal(str(fetchQuan*fetchPrice)).quantize(Decimal('.01'), rounding=ROUND_DOWN)
             NetMoney = Decimal(str(fetchQuan*fetchPrice*0.8)).quantize(Decimal('.01'), rounding=ROUND_DOWN)
             VatMoney = TotalPriceMoney - NetMoney
             if fetchQuan > 0 and fetchPrice > 0:
-                
+
                 Parent.UnitPrice.config(text = "£ "+str(fetchPrice))
                 Parent.Gross.config(text ="£ "+ str(TotalPriceMoney))
                 Parent.NetTotal.config(text = "£ "+ str(NetMoney))
@@ -641,7 +656,7 @@ class Parent():
                 Parent.Category.config(state = DISABLED)
                 Parent.Item.config(state = DISABLED)
                 Parent.Quantity.config(state = DISABLED)
-                
+
                 Parent.Confirm = ttk.Button(QuickAddFrame,text = "Confirm Sale",command =
                                             lambda:Parent.AddRecordToSalesDatabase(QuickAddFrame))
                 Parent.Confirm.grid(row=7,column=1)
@@ -650,17 +665,17 @@ class Parent():
                 Parent.StateLabel.config(text="**Error**",fg="red")
         except:
           Parent.StateLabel.config(text="**Error**",fg="red")
- 
+
     def AddRecordToSalesDatabase(self,QuickAddFrame):
         Parent.Confirm.destroy()
         OrderID = self.ProduceUniqueOrderID(Parent.Name)
-        
+
         db = sqlite3.connect("Customers.db")
         EachItem = db.execute("SELECT * FROM Inventory")
         for Record in EachItem:
             if Record[2] == Parent.Item.get():
                 ProdID = Record[0]
-                
+
         CSLCheck = "N"
         CheckValues = db.execute("SELECT * FROM Inventory WHERE Category = 'CoalSticksLogs'")
 
@@ -673,7 +688,7 @@ class Parent():
                   (?,?,?,?)''',(OrderID,ProdID,Parent.Quantity.get(),CSLCheck))
         db.commit()
         db.close()
-        
+
         Parent.Company.set("")
         Parent.Company.config(state=DISABLED)
         Parent.Name.set("")
@@ -682,7 +697,7 @@ class Parent():
         Parent.Category.config(state=DISABLED)
         Parent.Item.set("")
         Parent.Item.config(state=DISABLED)
-        
+
         Parent.Quantity.delete(0,END)
         Parent.UnitPrice.config(text = "")
         Parent.Gross.config(text = "")
@@ -691,32 +706,32 @@ class Parent():
                               Parent.AddNew(QuickAddFrame))
         Parent.Vat.config(text = "")
         Parent.StateLabel.config(text = "Sale Added!!")
-        
+
     def ProduceUniqueOrderID(Name):
         now = datetime.datetime.now()
         Date = str(now.day)+"/"+str(now.month)+"/"+str(now.year)
-        
+
         db = sqlite3.connect("Customers.db")
 
         EachName = db.execute("SELECT * FROM Customers")
         for Record in EachName:
             if Record[1]+" "+Record[2] == Name.get():
                 CustID = Record[0]
-                
+
         db.execute("INSERT INTO Orders(Date,CustomerID)Values (?,?)",(Date,CustID))
 
         Orders = db.execute("SELECT * FROM Orders")
         for x in Orders:
             OrderID = x[0]
-           
+
         db.commit()
         db.close()
 
         return OrderID
-     
+
         pass
         #NewWin = Invoices(Tk())
-   
+
     def TreeView(self, master, fields, width, height = 10, scrollpresent = True):
 
         self.treeFrame = Frame(master)
@@ -727,11 +742,11 @@ class Parent():
             self.tree.configure(yscrollcommand=self.scrollBar.set)
 
         self.tree.grid(row = 0, column=0, in_= self.treeFrame)
-    
+
         HeaderLength = 0
         for x in fields:
             HeaderLength += len(x)
-        
+
         for field in fields:
             # Set each column width
             self.tree.column(field, width = int(len(field)/HeaderLength*(width-50)))
@@ -745,7 +760,7 @@ class Parent():
         List = []
         for child in tree.get_children(''):
             List.append((tree.set(child,0),tree.set(child,1),
-                         tree.set(child,2),tree.set(child,3),  
+                         tree.set(child,2),tree.set(child,3),
                          tree.set(child,4),tree.set(child,5),
                          tree.set(child,6)))
         index = table_header.index(col)
@@ -765,9 +780,9 @@ class Parent():
                     List[i] = List[i+1]
                     List[i+1] = temp
             passnum = passnum-1
-        self.tree.delete(*self.tree.get_children()) 
+        self.tree.delete(*self.tree.get_children())
         for item in List:
-            self.tree.insert('', 'end', values=item) 
+            self.tree.insert('', 'end', values=item)
         self.tree.heading(col, command=lambda c=field:self.SortRecords
                      (c,int(not descending),table_header,self.tree))
 
@@ -777,12 +792,12 @@ class Parent():
             if len(x) > LongestWord:
                 LongestWord = len(x)
         for x in List1:
-            if len(x) == LongestWord:               
+            if len(x) == LongestWord:
                 style = ttk.Style()
                 style.configure('TCombobox', postoffset=(0,0,len(x)+70,0))
-                
+
     def InputMask(self,master,grid,items,text):
-        
+
         TelephoneRegEx = r"\d+[ ]{0,1}\d*$"
         NamesCompanyRegEx = r"[a-zA-Z]+"
         PostcodeRegEx = r"[a-zA-Z0-9]{2,4}[ ]{1}[0-9]{1}[a-zA-Z]{2}$"
@@ -796,7 +811,7 @@ class Parent():
                         if re.match(NamesCompanyRegEx,self.Lastname.get()):
                             if re.match(NamesCompanyRegEx,self.CompanyEntry.get()):
                                 if re.match(AddressRegEx,self.Address.get()):
-                                
+
                                     self.Firstname.config(state = DISABLED)
                                     self.Lastname.config(state = DISABLED)
                                     self.CompanyEntry.config(state = DISABLED)
@@ -806,13 +821,13 @@ class Parent():
                                     self.Address.config(state = DISABLED)
                                     self.StateLabel.config(text="")
 
-                                    if text == "Customers":                       
+                                    if text == "Customers":
                                         self.ConfirmButton = ttk.Button(grid,text = "Confirm")
                                         #,command = lambda:Customers.AddRecordToCustomerDatabase(self,grid,master))
                                         self.ConfirmButton.grid(column = 1, row = 7)
                                         self.Submit.config(text = "Edit")
                                         #,command = lambda:Customers.Reset(self,"Edit",grid,master))
-                                        
+
                                     elif text == "FormWindow":
                                         self.ConfirmButton = ttk.Button(grid,text = "Confirm")
                                         #,command = lambda:EditFormWindow.ChangeDatabase(self,master,self.ConfirmButton,items))
@@ -842,9 +857,9 @@ class Parent():
             self.CheckValue.set(False)
 
     def AddSalesForm(self, master):
-        
+
         AddSaleCanvas = Canvas(master, highlightthickness = 1, bg = "#add8e6", width = 300, height = 300)
-        
+
         # Label Definitions
         Label(AddSaleCanvas, text="Company", bg="#add8e6").grid(row=1, pady = 2)
         Label(AddSaleCanvas, text="Client", bg="#add8e6").grid(row=2, pady = 2)
@@ -872,10 +887,10 @@ class Parent():
                 CompanyValues.append(max(x))
         CompanyValues = sorted(list(set(CompanyValues)))
         self.Company["values"] = CompanyValues
-        
+
         self.Company.bind("<Configure>",Parent.CheckWidth(CompanyValues))
         self.Company.bind("<<ComboboxSelected>>",self.ActivateAndFillNameBox)
-        
+
         self.Category = ttk.Combobox(AddSaleCanvas,width = 20)
         Categories = db.execute("SELECT Category FROM Inventory")
         StockCat = []
@@ -889,8 +904,8 @@ class Parent():
         self.Category.bind("<<ComboboxSelected>>",self.ActivateAndFillItemBox)
 
         self.Quantity = ttk.Entry(AddSaleCanvas,width = 20)
-        self.UnitPrice = Label(AddSaleCanvas,bg="#add8e6")  
-        self.Total = Label(AddSaleCanvas,bg="#add8e6")  
+        self.UnitPrice = Label(AddSaleCanvas,bg="#add8e6")
+        self.Total = Label(AddSaleCanvas,bg="#add8e6")
         self.StateLabel = Label(AddSaleCanvas,width = 10,bg="#add8e6")
         self.UniqueIDRepeat = True
         self.AddSale = ttk.Button(AddSaleCanvas,text="Add Sale",command = lambda: self.CheckandConfirm(QuickAddFrame,self.UniqueIDRepeat))
@@ -906,14 +921,14 @@ class Parent():
         self.Total.grid(row = 7,column=1, pady = 2, padx = 2)
         self.AddSale.grid(row=8, padx = 1, pady = 2)
         self.Confirm.grid(row=8,column=1, padx=(0,5), pady = 2)
-        self.StateLabel.grid(row = 8,column=2, padx = 1, pady = 2)  
+        self.StateLabel.grid(row = 8,column=2, padx = 1, pady = 2)
 
-        return AddSaleCanvas  
+        return AddSaleCanvas
 
     def AddInventoryForm(self, master):
-        
+
         AddItemCanvas = Canvas(master, highlightthickness = 1, bg = "#add8e6", width = 300, height = 300)
-        
+
         # Widget Definitions
         TotalItemsLabel = Label(AddItemCanvas, text = "Total Items: 0", bg = "#add8e6")
         AddItemsTitle = Label(AddItemCanvas, text = "Add Items",bg = "#add8e6", font = ("Helvetica", 18, "bold"))
@@ -940,7 +955,7 @@ class Parent():
         AddSaleButton.grid(row = 5, column = 0 , pady = 10, padx = (10,0))
         ConfirmButton.grid(row = 5, column = 1, pady = 5)
         StateLabel.grid(row = 5, column = 2, pady = 5)
-        
+
 
         # db = sqlite3.connect("Customers.db")
         # Link = db.cursor()
@@ -953,10 +968,10 @@ class Parent():
         #         CompanyValues.append(max(x))
         # CompanyValues = sorted(list(set(CompanyValues)))
         # self.Company["values"] = CompanyValues
-        
+
         # self.Company.bind("<Configure>",Parent.CheckWidth(CompanyValues))
         # self.Company.bind("<<ComboboxSelected>>",self.ActivateAndFillNameBox)
-        
+
         # self.Category = ttk.Combobox(AddSaleCanvas,width = 20)
         # Categories = db.execute("SELECT Category FROM Inventory")
         # StockCat = []
@@ -969,9 +984,9 @@ class Parent():
         # self.Category.bind("<Configure>",Parent.CheckWidth(StockCat))
         # self.Category.bind("<<ComboboxSelected>>",self.ActivateAndFillItemBox)
 
-        
-        
-        return AddItemCanvas  
+
+
+        return AddItemCanvas
 
     def RoundedCorneredCanvas(self, Window, x2, y2, feather, color, x1 = 1, y1 = 1):
 
@@ -1009,10 +1024,10 @@ class Parent():
         for i in range(res):
             points += [x1 + feather - np.cos(i/res*2) * feather,
                     y1 + feather - np.sin(i/res*2) * feather]
-        
+
         canvas = Canvas(Window, highlightthickness = 1)
         canvas.create_polygon(points, fill = color)
-            
+
         return canvas
 
 if __name__ == "__main__":
