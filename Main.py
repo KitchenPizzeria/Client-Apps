@@ -852,7 +852,6 @@ class Parent():
                                         self.confirm_button.grid(column = 1, row = 7)
                                         self.Submit.config(text = "Edit")
                                         #,command = lambda:Customers.Reset(self,"Edit",grid,master))
-
                                     elif text == "FormWindow":
                                         self.confirm_button = ttk.Button(grid,text = "Confirm")
                                         #,command = lambda:EditFormWindow.ChangeDatabase(self,master,self.ConfirmButton,items))
