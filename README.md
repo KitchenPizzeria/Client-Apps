@@ -6,7 +6,7 @@
  
 [![CircleCI](https://circleci.com/gh/KitchenPizzeria/DIY-DIGITISED.svg?style=shield)]
 
-[![Android-master Actions Status](https://github.com/KitchenPizzeria/DIY-DIGITISED/workflows/lint/badge.svg)](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions)
+[![Linting Status](https://github.com/KitchenPizzeria/DIY-DIGITISED/workflows/lint/badge.svg)](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions)
 
  
 ## The Client
