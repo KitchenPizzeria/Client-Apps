@@ -14,6 +14,9 @@ DB = sqlite3.connect("Customers.db")
 CONN = DB.cursor()
 
 class Parent():
+    """
+    This is a module which generates the program for the Tkinter Gui Application
+    """
     def __init__(self,master):
         # Define Tk Window
         self.master = master
@@ -510,7 +513,7 @@ class Parent():
             self.Address.delete(0, END)
             self.Postcode.delete(0, END)
             # Clear Record from database
- 
+
 
         self.show_records.config(text = "Return", state = ACTIVE)
 
@@ -554,7 +557,7 @@ class Parent():
 
         self.delete_records.config(state = ACTIVE)
         self.edit_clients.config(state = ACTIVE)
- 
+
 
         items = self.tree.item(self.tree.selection())
 
