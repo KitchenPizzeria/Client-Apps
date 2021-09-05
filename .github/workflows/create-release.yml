@@ -18,8 +18,9 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+            Changes in this Release:
+            - GUI Changes have been made
+            - Customers Page now works
+
           draft: false
           prerelease: false
