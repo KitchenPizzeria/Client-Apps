@@ -1,7 +1,14 @@
 name: PR_merger
 
-on : workflow-dispatch
+on : pull_request
 
 jobs:
-  merge:
-  
+  Merge:
+    runs-on : ubuntu-latest
+    steps:
+    - name: Merge Pull Request
+      uses: juliangruber/merge-pull-request-action@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        number: 1
+        method: squash
