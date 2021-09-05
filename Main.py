@@ -149,7 +149,7 @@ class Parent():
 
         self.AddClientForm(Window).pack(side = RIGHT, pady = 5)
         background_canvas.place(x = 5, y = 5 , width = 380, height = 210)
-    
+
     def DefaultCustomerSelectedInfo(self):
 
         self.CFirstname.config(text = "Firstname: None")
@@ -492,7 +492,7 @@ class Parent():
 
     # Populate Tableview for each tab
     def DisplayAllRecords(self, table):
-        
+
         if self.ShowRecordsButton["text"] == "Return":
             # Change button back to saying "Show"
             self.ShowRecordsButton.config(text = "Show Clients")
@@ -510,7 +510,7 @@ class Parent():
             self.Address.delete(0, END)
             self.Postcode.delete(0, END)
             # Clear Record from database
-        
+ 
 
         self.ShowRecordsButton.config(text = "Return", state = ACTIVE)
 
@@ -551,13 +551,13 @@ class Parent():
 
     def SelectClient(self, event):
 
-        
+
         self.DeleteClientButton.config(state = ACTIVE)
         self.EditClientButton.config(state = ACTIVE)
-        
+ 
 
         items = self.tree.item(self.tree.selection())
-        
+
         self.CFirstname.config(text = "Firstname: "+items["values"][0][:20])
         self.CLastname.config(text = "Lastname: "+items["values"][1][:20])
         self.CCompany.config(text = "Company: "+items["values"][2][:20])
@@ -685,7 +685,7 @@ class Parent():
             else:
                 Parent.StateLabel.config(text="**Error**",fg="red")
         except:
-          Parent.StateLabel.config(text="**Error**",fg="red")
+            Parent.StateLabel.config(text="**Error**",fg="red")
 
     def AddRecordToSalesDatabase(self,QuickAddFrame):
         Parent.Confirm.destroy()
