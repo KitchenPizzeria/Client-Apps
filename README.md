@@ -4,6 +4,9 @@
 
 [![Linting Status](https://github.com/KitchenPizzeria/DIY-DIGITISED/workflows/Pylint/badge.svg)](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions)
 
+[![Linting Status](https://github.com/KitchenPizzeria/DIY-DIGITISED/workflows/Create Release/badge.svg)](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions)
+
+
  
 ## The Client
 
