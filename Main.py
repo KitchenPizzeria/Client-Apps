@@ -6,6 +6,7 @@ import datetime
 import re
 from ttkthemes import ThemedTk
 import numpy as np
+import Flask
 
 BUTTON_FONT = ("Georgia",16)
 TITLE_FONT = ("Georgia",28)
