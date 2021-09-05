@@ -118,7 +118,7 @@ class Parent():
         #PictureCanvas.pack(side = LEFT)
 
         # Label Definitions
-        self.firstname = Label(info_canvas, text = "Firstname: None",bg = "#add8e6")
+        self.firstname_label = Label(info_canvas, text = "Firstname: None",bg = "#add8e6")
         self.lastname = Label(info_canvas, text = "Lastname: None",bg = "#add8e6")
         self.company = Label(info_canvas, text = "Company: None",bg = "#add8e6")
         self.telephone = Label(info_canvas, text = "Telephone: None",bg = "#add8e6")
@@ -155,7 +155,7 @@ class Parent():
 
     def DefaultCustomerSelectedInfo(self):
 
-        self.firstname.config(text = "Firstname: None")
+        self.firstname_label.config(text = "Firstname: None")
         self.lastname.config(text = "Lastname: None")
         self.company.config(text = "Company: None")
         self.telephone .config(text = "Telephone: None")
@@ -343,23 +343,23 @@ class Parent():
 
         PerformanceTitle = Label(PerformanceCanvas, text = "Performance", bg = "#add8e6", font = ("helvetica",15, "italic"))
         PerformanceNotebook = ttk.Notebook(PerformanceCanvas, padding = 3)
-        self.dailyFrame = Frame(PerformanceNotebook, bg = "#add8e6")
-        self.monthlyFrame = Frame(PerformanceNotebook, bg = "#add8e6")
-        self.annualFrame = Frame(PerformanceNotebook, bg = "#add8e6")
-        Label(self.dailyFrame, text = "daily").pack()
-        Label(self.monthlyFrame, text = "monthly").pack()
-        Label(self.annualFrame, text = "annual").pack()
+        self.daily_frame = Frame(PerformanceNotebook, bg = "#add8e6")
+        self.monthly_frame = Frame(PerformanceNotebook, bg = "#add8e6")
+        self.annual_frame = Frame(PerformanceNotebook, bg = "#add8e6")
+        Label(self.daily_frame, text = "daily").pack()
+        Label(self.monthly_frame, text = "monthly").pack()
+        Label(self.annual_frame, text = "annual").pack()
 
-        PerformanceNotebook.add(self.dailyFrame, text = "Daily")
-        PerformanceNotebook.add(self.monthlyFrame, text = "Monthly")
-        PerformanceNotebook.add(self.annualFrame, text = "Annual")
+        PerformanceNotebook.add(self.daily_frame, text = "Daily")
+        PerformanceNotebook.add(self.monthly_frame, text = "Monthly")
+        PerformanceNotebook.add(self.annual_frame, text = "Annual")
 
         PerformanceCanvas.pack(padx = 5, pady= (5,10))
         PerformanceTitle.pack(padx = 5, pady = 5)
         PerformanceNotebook.pack(fill = "x")
-        self.dailyFrame.pack(fill = "both", expand = True)
-        self.monthlyFrame.pack(fill = "both", expand = True)
-        self.annualFrame.pack(fill = "both", expand = True)
+        self.daily_frame.pack(fill = "both", expand = True)
+        self.monthly_frame.pack(fill = "both", expand = True)
+        self.annual_frame.pack(fill = "both", expand = True)
 
         FilterCanvas = Canvas(infoFrame,
             bg = "#add8e6",
@@ -387,7 +387,7 @@ class Parent():
 
         # Button Definitions
         self.show_records = ttk.Button(button_canvas, text = "Show Sales", command = lambda: self.DisplayAllRecords("Sales"))
-        self.SelectRecordButton= ttk.Button(button_canvas, text = "Select", state = DISABLED, command = self.SelectClient)
+        self.select_record = ttk.Button(button_canvas, text = "Select", state = DISABLED, command = self.SelectClient)
         self.delete_records = ttk.Button(button_canvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
         self.edit_clients = ttk.Button(button_canvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
 
@@ -505,7 +505,7 @@ class Parent():
             # Clear Customer Selected Info Pane
             self.DefaultCustomerSelectedInfo()
             # Clear Customer Info Entry Widget
-            self.Firstname.delete(0, END)
+            self.firstname_entry.delete(0, END)
             self.Lastname.delete(0, END)
             self.CompanyEntry.delete(0, END)
             self.ContactNum.delete(0, END)
@@ -561,7 +561,7 @@ class Parent():
 
         items = self.tree.item(self.tree.selection())
 
-        self.firstname.config(text = "Firstname: "+items["values"][0][:20])
+        self.firstname_label.config(text = "Firstname: "+items["values"][0][:20])
         self.lastname.config(text = "Lastname: "+items["values"][1][:20])
         self.company.config(text = "Company: "+items["values"][2][:20])
         self.telephone.config(text = "Telephone: "+str(items["values"][3]))
@@ -578,7 +578,7 @@ class Parent():
         items = self.tree.item(self.tree.selection())
         # self.tree.delete(*self.self.tree.get_children())
 
-        self.Firstname.insert(0,items["values"][0])
+        self.firstname_entry.insert(0,items["values"][0])
         self.Lastname.insert(0,items["values"][1])
         self.CompanyEntry.insert(0,items["values"][2])
         self.ContactNum.insert(0,items["values"][3])
@@ -603,23 +603,23 @@ class Parent():
         self.Submit.grid(row=7,pady=(0,8))
 
         # Entry Definitions
-        self.Firstname = ttk.Entry(AddClient)
-        self.Lastname = ttk.Entry(AddClient)
-        self.CompanyEntry = ttk.Entry(AddClient)
-        self.ContactNum = ttk.Entry(AddClient)
-        self.Email = ttk.Entry(AddClient)
-        self.Address = ttk.Entry(AddClient)
-        self.Postcode = ttk.Entry(AddClient)
+        self.firstname_entry = ttk.Entry(AddClient)
+        self.lastname_entry = ttk.Entry(AddClient)
+        self.company_entry = ttk.Entry(AddClient)
+        self.contact_num_entry = ttk.Entry(AddClient)
+        self.email_entry = ttk.Entry(AddClient)
+        self.address_entry = ttk.Entry(AddClient)
+        self.postcode_entry = ttk.Entry(AddClient)
         self.StateLabel = Label(AddClient, bg="#add8e6")
 
         # Entry Placement
-        self.Firstname.grid(row=0, column=1, pady = (2,0), padx = (0,5))
-        self.Lastname.grid(row=1, column=1, pady = (1,0), padx = (0,5))
-        self.CompanyEntry.grid(row=2, column=1,  pady = (1,0), padx = (0,5))
-        self.ContactNum.grid(row=3, column=1, pady = (1,0), padx = (0,5))
-        self.Email.grid(row=4, column=1, pady = (1,0), padx = (0,5))
-        self.Address.grid(row=5, column=1, pady = (1,0), padx = (0,5))
-        self.Postcode.grid(row=6, column=1,  pady = (1,0), padx = (0,5))
+        self.firstname_entry.grid(row=0, column=1, pady = (2,0), padx = (0,5))
+        self.lastname_entry.grid(row=1, column=1, pady = (1,0), padx = (0,5))
+        self.company_entry.grid(row=2, column=1,  pady = (1,0), padx = (0,5))
+        self.contact_num_entry.grid(row=3, column=1, pady = (1,0), padx = (0,5))
+        self.email_num_enty.grid(row=4, column=1, pady = (1,0), padx = (0,5))
+        self.address_num_entry.grid(row=5, column=1, pady = (1,0), padx = (0,5))
+        self.postcode_num_entry.grid(row=6, column=1,  pady = (1,0), padx = (0,5))
         self.StateLabel.grid(column=1,row=7,  pady = (1,0), padx = (0,5))
 
         return AddClient
@@ -829,34 +829,34 @@ class Parent():
         EmailRegEx = r"[a-zA-z0-9]+[@]{1}[a-zA-Z0-9.]+$"
         AddressRegEx = r"\d{1,3}[ ]{1}[a-zA-Z]+[ ]{1}[a-zA-Z]+"
 
-        if re.match(TelephoneRegEx,self.ContactNum.get()):
-            if re.match(EmailRegEx,self.Email.get()):
-                if re.match(PostcodeRegEx,self.Postcode.get()):
-                    if re.match(NamesCompanyRegEx,self.Firstname.get()):
-                        if re.match(NamesCompanyRegEx,self.Lastname.get()):
-                            if re.match(NamesCompanyRegEx,self.CompanyEntry.get()):
-                                if re.match(AddressRegEx,self.Address.get()):
+        if re.match(TelephoneRegEx,self.contant_num_entry.get()):
+            if re.match(EmailRegEx,self.email_entry.get()):
+                if re.match(PostcodeRegEx,self.postcode_entry.get()):
+                    if re.match(NamesCompanyRegEx,self.firstname_entry.get()):
+                        if re.match(NamesCompanyRegEx,self.lastname_entry.get()):
+                            if re.match(NamesCompanyRegEx,self.company_entry.get()):
+                                if re.match(AddressRegEx,self.address_entry.get()):
 
-                                    self.Firstname.config(state = DISABLED)
-                                    self.Lastname.config(state = DISABLED)
-                                    self.CompanyEntry.config(state = DISABLED)
-                                    self.Email.config(state = DISABLED)
-                                    self.ContactNum.config(state = DISABLED)
-                                    self.Postcode.config(state = DISABLED)
-                                    self.Address.config(state = DISABLED)
+                                    self.firstname_entry.config(state = DISABLED)
+                                    self.lastname_entry.config(state = DISABLED)
+                                    self.company_entry.config(state = DISABLED)
+                                    self.email_entry.config(state = DISABLED)
+                                    self.contact_num_entry.config(state = DISABLED)
+                                    self.postcode_entry.config(state = DISABLED)
+                                    self.address_entry.config(state = DISABLED)
                                     self.StateLabel.config(text="")
 
                                     if text == "Customers":
-                                        self.ConfirmButton = ttk.Button(grid,text = "Confirm")
+                                        self.confirm_button = ttk.Button(grid,text = "Confirm")
                                         #,command = lambda:Customers.AddRecordToCustomerDatabase(self,grid,master))
-                                        self.ConfirmButton.grid(column = 1, row = 7)
+                                        self.confirm_button.grid(column = 1, row = 7)
                                         self.Submit.config(text = "Edit")
                                         #,command = lambda:Customers.Reset(self,"Edit",grid,master))
 
                                     elif text == "FormWindow":
-                                        self.ConfirmButton = ttk.Button(grid,text = "Confirm")
+                                        self.confirm_button = ttk.Button(grid,text = "Confirm")
                                         #,command = lambda:EditFormWindow.ChangeDatabase(self,master,self.ConfirmButton,items))
-                                        self.ConfirmButton.grid(column = 1, row = 7)
+                                        self.confirm_button.grid(column = 1, row = 7)
                                         #self.Submit.config(text = "Edit",command = lambda:Customers.Reset(self,"Edit",grid))
                                 else:
                                     self.StateLabel.config(text= "Error: Address", fg="red")
