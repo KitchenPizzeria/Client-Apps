@@ -4,7 +4,7 @@ on : pull_request
 
 jobs:
 
- Approve Request:
+ Approve-Request:
    runs-on: ubuntu-latest
    steps:
    - name: Approve Pull Request
@@ -13,7 +13,7 @@ jobs:
        github-token: ${{ secrets.GITHUB_TOKEN }}
        number: 1
        
- Merge Branch:
+ Merge-Branch:
   runs-on : ubuntu-latest
   steps:
   - name: Merge Pull Request
