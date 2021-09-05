@@ -14,6 +14,7 @@ jobs:
        number: 1
        
  Merge-Branch:
+  needs: [Approve-Request]
   runs-on : ubuntu-latest
   steps:
   - name: Merge Pull Request
