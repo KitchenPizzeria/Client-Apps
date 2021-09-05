@@ -19,8 +19,8 @@ class Parent():
         self.master = master
 
         # Define windows properties
-        self.WindowHeight = 530
-        self.WindowWidth = 700
+        self.window_height = 530
+        self.window_width = 700
         master.resizable(0,0)
         master.geometry('%dx%d' % (self.WindowWidth, self.WindowHeight))
         master.title("DIY Digitised")
@@ -46,34 +46,34 @@ class Parent():
         )
 
         self.notebook = ttk.Notebook(master, padding = 3)
-        self.currentNotebooktab = 0
+        self.current_notebook_tab = 0
         self.notebook.bind("<<NotebookTabChanged>>", self.loadOnClick)
 
-        self.CustomersFrame = Frame(self.notebook, bg = "#B7E9F7")
-        self.SalesFrame = Frame(self.notebook, bg = "#B7E9F7")
-        self.InventoryFrame = Frame(self.notebook, bg = "#B7E9F7")
-        self.InvoicesFrame = Frame(self.notebook, bg = "#B7E9F7")
+        self.customers_frame = Frame(self.notebook, bg = "#B7E9F7")
+        self.sales_frame = Frame(self.notebook, bg = "#B7E9F7")
+        self.inventory_frame = Frame(self.notebook, bg = "#B7E9F7")
+        self.invoices_frame = Frame(self.notebook, bg = "#B7E9F7")
 
         # Notebook/Frame Placement Rules
         self.notebook.pack()
-        self.CustomersFrame.pack(fill = 'both', expand= True)
-        self.SalesFrame.pack(fill = 'both', expand= True)
-        self.InvoicesFrame.pack(fill = 'both', expand= True)
-        self.InventoryFrame.pack(fill = 'both', expand= True)
+        self.customers_frame.pack(fill = 'both', expand= True)
+        self.sales_frame.pack(fill = 'both', expand= True)
+        self.invoices_frame.pack(fill = 'both', expand= True)
+        self.inventory_frame.pack(fill = 'both', expand= True)
 
         # Add frames to the Notebook
-        self.notebook.add(self.CustomersFrame, text = "Customers", sticky = NE)
-        self.notebook.add(self.SalesFrame, text = "Sales")
-        self.notebook.add(self.InventoryFrame, text = "Inventory")
-        self.notebook.add(self.InvoicesFrame, text = "Invoices")
+        self.notebook.add(self.customers_frame, text = "Customers", sticky = NE)
+        self.notebook.add(self.sales_frame, text = "Sales")
+        self.notebook.add(self.inventory_frame, text = "Inventory")
+        self.notebook.add(self.invoices_frame, text = "Invoices")
 
     def loadOnClick(self,event):
 
         tabList = [
-            self.CustomersFrame,
-            self.SalesFrame,
-            self.InventoryFrame,
-            self.InvoicesFrame
+            self.customers_frame,
+            self.sales_frame,
+            self.inventory_frame,
+            self.invoices_frame
         ]
 
         # clear all widgets from starting tab
@@ -84,16 +84,16 @@ class Parent():
 
         # then update current tab and initialise all new widgets in destination tab
 
-        self.indexOfCurrentNotebooktab = self.notebook.index(self.notebook.select())
+        self.index_new_tab = self.notebook.index(self.notebook.select())
 
-        if self.currentNotebooktab == 0:
-            self.PopulateCustomersFrame(self.CustomersFrame)
-        if self.currentNotebooktab == 1:
-            self.PopulateSalesFrame(self.SalesFrame)
-        if self.currentNotebooktab == 2:
-            self.PopulateInventoryFrame(self.InventoryFrame)
-        if self.currentNotebooktab == 3:
-            self.PopulateInvoicesFrame(self.InvoicesFrame)
+        if self.index_new_tab == 0:
+            self.PopulateCustomersFrame(self.customers_frame)
+        if self.index_new_tab == 1:
+            self.PopulateSalesFrame(self.sales_frame)
+        if self.index_new_tab == 2:
+            self.PopulateInventoryFrame(self.inventory_frame)
+        if self.index_new_tab == 3:
+            self.PopulateInvoicesFrame(self.invoices_frame)
 
     def PopulateCustomersFrame(self, Window):
 
@@ -104,7 +104,7 @@ class Parent():
         fields = [description[0] for description in result.description]
 
         # Canvas Definitions
-        background_canvas = self.RoundedCorneredCanvas(self.CustomersFrame, width, height, 15)
+        background_canvas = self.RoundedCorneredCanvas(self.customers_frame, width, height, 15)
         info_canvas = Frame(background_canvas, bg = "#add8e6")
         button_canvas = Frame(background_canvas, bg = "#add8e6")
         #PictureCanvas = Canvas(rootCanvas)
@@ -115,34 +115,34 @@ class Parent():
         #PictureCanvas.pack(side = LEFT)
 
         # Label Definitions
-        self.CFirstname = Label(info_canvas, text = "Firstname: None",bg = "#add8e6")
-        self.CLastname = Label(info_canvas, text = "Lastname: None",bg = "#add8e6")
-        self.CCompany = Label(info_canvas, text = "Company: None",bg = "#add8e6")
-        self.CTelephone = Label(info_canvas, text = "Telephone: None",bg = "#add8e6")
-        self.CEmail = Label(info_canvas, text = "Email: None",bg = "#add8e6")
-        self.CAddress = Label(info_canvas, text = "Address: None",bg = "#add8e6")
-        self.CPostcode = Label(info_canvas, text = "Postcode: None",bg = "#add8e6")
-        self.AmountOfClients = Label(info_canvas, text = "Amount of Clients: 0  ",bg = "#add8e6")
+        self.firstname = Label(info_canvas, text = "Firstname: None",bg = "#add8e6")
+        self.lastname = Label(info_canvas, text = "Lastname: None",bg = "#add8e6")
+        self.company = Label(info_canvas, text = "Company: None",bg = "#add8e6")
+        self.telephone = Label(info_canvas, text = "Telephone: None",bg = "#add8e6")
+        self.email = Label(info_canvas, text = "Email: None",bg = "#add8e6")
+        self.address = Label(info_canvas, text = "Address: None",bg = "#add8e6")
+        self.postcode = Label(info_canvas, text = "Postcode: None",bg = "#add8e6")
+        self.amount_of_clients = Label(info_canvas, text = "Amount of Clients: 0  ",bg = "#add8e6")
 
         # Label Placements
-        self.CFirstname.pack(side = TOP, pady = (5,0))
-        self.CLastname.pack(side = TOP)
-        self.CCompany.pack(side = TOP)
-        self.CTelephone.pack(side = TOP)
-        self.CEmail.pack(side = TOP)
-        self.CAddress.pack(side = TOP)
-        self.CPostcode.pack(side = TOP)
-        self.AmountOfClients.pack(side = TOP, pady = (0,5), padx = 5)
+        self.firstname.pack(side = TOP, pady = (5,0))
+        self.lastname.pack(side = TOP)
+        self.company.pack(side = TOP)
+        self.telephone.pack(side = TOP)
+        self.email.pack(side = TOP)
+        self.address.pack(side = TOP)
+        self.postcode.pack(side = TOP)
+        self.amount_of_clients.pack(side = TOP, pady = (0,5), padx = 5)
 
         # Button Definitions
-        self.ShowRecordsButton = ttk.Button(button_canvas, width = 10,text = "Show Clients",command = lambda: self.DisplayAllRecords("Customers"))
-        self.DeleteClientButton = ttk.Button(button_canvas,width = 8,text = "Delete", state = DISABLED, command = self.DeleteClient)
-        self.EditClientButton = ttk.Button(button_canvas, width = 8, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
+        self.show_records = ttk.Button(button_canvas, width = 10,text = "Show Clients",command = lambda: self.DisplayAllRecords("Customers"))
+        self.delete_records = ttk.Button(button_canvas,width = 8,text = "Delete", state = DISABLED, command = self.DeleteClient)
+        self.edit_clients = ttk.Button(button_canvas, width = 8, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
 
         # Button Placements
-        self.ShowRecordsButton.grid(row=0,column=0, padx = 3)
-        self.DeleteClientButton.grid(row=0,column=1, padx = 3)
-        self.EditClientButton.grid(row=0,column=2, padx = 3)
+        self.show_records.grid(row=0,column=0, padx = 3)
+        self.delete_records.grid(row=0,column=1, padx = 3)
+        self.edit_clients.grid(row=0,column=2, padx = 3)
 
         self.customers_treeview = self.TreeView(Window, fields[1:], self.WindowWidth)
         self.customers_treeview.pack(side = BOTTOM)
@@ -152,14 +152,14 @@ class Parent():
 
     def DefaultCustomerSelectedInfo(self):
 
-        self.CFirstname.config(text = "Firstname: None")
-        self.CLastname.config(text = "Lastname: None")
-        self.CCompany.config(text = "Company: None")
-        self.CTelephone .config(text = "Telephone: None")
-        self.CEmail .config(text = "Email: None")
-        self.CAddress.config(text = "Address: None")
-        self.CPostcode.config(text = "Postcode: None")
-        self.AmountOfClients.config(text = "Amount of Clients: 0  ")
+        self.firstname.config(text = "Firstname: None")
+        self.lastname.config(text = "Lastname: None")
+        self.company.config(text = "Company: None")
+        self.telephone .config(text = "Telephone: None")
+        self.email .config(text = "Email: None")
+        self.address.config(text = "Address: None")
+        self.postcode.config(text = "Postcode: None")
+        self.amount_of_clients.config(text = "Amount of Clients: 0  ")
 
 
     def PopulateSalesFrame(self, Window):
@@ -172,19 +172,19 @@ class Parent():
 
         self.height = 250
         self.width = 370
-        self.roundedRectangleCanvas = Canvas(Window, highlightthickness = 0, bg= "#B7E9F7")
+        self.rounded_canvas = Canvas(Window, highlightthickness = 0, bg= "#B7E9F7")
 
-        self.RoundedCorneredCanvas(self.roundedRectangleCanvas, 5, 5, self.width - 5, self.height-5, 20, "#ffffff")
+        self.RoundedCorneredCanvas(self.rounded_canvas, 5, 5, self.width - 5, self.height-5, 20, "#ffffff")
         self.SalesInformationPane().pack(side=LEFT, padx = 2, pady =2)
 
-        self.roundedRectangleCanvas.place(x = 5, y = 5, height = self.height, width = self.width)
+        self.rounded_canvas.place(x = 5, y = 5, height = self.height, width = self.width)
 
     def PopulateInventoryFrame(self, Window):
 
         c = DB.execute("SELECT * FROM Inventory")
         fields = [description[0] for description in c.description]
 
-        PopularItemsCanvas = self.RoundedCorneredCanvas(self.InventoryFrame, 370, 215, 15, "#add8e6")
+        PopularItemsCanvas = self.RoundedCorneredCanvas(self.inventory_frame, 370, 215, 15, "#add8e6")
 
         # Popular Items Canvas
         # Definitions
@@ -217,7 +217,7 @@ class Parent():
         # Write Code to populate the low items tables
 
         # ADD ITEMS CANVAS
-        AddItemCanvas = self.RoundedCorneredCanvas(self.InventoryFrame, 201, 215, 15, "#add8e6")
+        AddItemCanvas = self.RoundedCorneredCanvas(self.inventory_frame, 201, 215, 15, "#add8e6")
         Label(AddItemCanvas, text = "Add Item", font = "Helvetica 15 bold", bg = "#add8e6").grid(row = 0, columnspan=4, pady = 3)
         Label(AddItemCanvas, text = "Company", bg = "#add8e6").grid(row = 1, column = 0, columnspan=2, pady = (10,5))
         ttk.Combobox(AddItemCanvas, width = 8).grid(row = 1, column = 2, columnspan=2)
@@ -334,7 +334,7 @@ class Parent():
 
     def SalesInformationPane(self):
 
-        infoFrame = Canvas(self.roundedRectangleCanvas, highlightthickness=0, bg = "#add8e6")
+        infoFrame = Canvas(self.rounded_canvas, highlightthickness=0, bg = "#add8e6")
 
         PerformanceCanvas = Canvas(infoFrame,bg = "#add8e6", highlightthickness = 0, width = 375)
 
@@ -383,16 +383,16 @@ class Parent():
         button_canvas = Canvas(infoFrame)
 
         # Button Definitions
-        self.ShowRecordsButton = ttk.Button(button_canvas, text = "Show Sales", command = lambda: self.DisplayAllRecords("Sales"))
+        self.show_records = ttk.Button(button_canvas, text = "Show Sales", command = lambda: self.DisplayAllRecords("Sales"))
         self.SelectRecordButton= ttk.Button(button_canvas, text = "Select", state = DISABLED, command = self.SelectClient)
-        self.DeleteClientButton = ttk.Button(button_canvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
-        self.EditClientButton = ttk.Button(button_canvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
+        self.delete_records = ttk.Button(button_canvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
+        self.edit_clients = ttk.Button(button_canvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
 
         # Button Placements
-        self.ShowRecordsButton.grid(row=0,column=0)
+        self.show_records.grid(row=0,column=0)
         self.SelectRecordButton.grid(row=0,column=1)
-        self.DeleteClientButton.grid(row=0,column=2)
-        self.EditClientButton.grid(row=0,column=3)
+        self.delete_records.grid(row=0,column=2)
+        self.edit_clients.grid(row=0,column=3)
 
         button_canvas.pack(side=BOTTOM, pady = 10, padx = 5)
 
@@ -472,16 +472,16 @@ class Parent():
         ApplyButton.grid(row = 1, column = 2, columnspan=2, padx=5, pady = 5)
 
         # Button Definitions
-        self.ShowRecordsButton = ttk.Button(button_canvas, text = "Show Inventory", command = lambda: self.DisplayAllRecords("Inventory"))
+        self.show_records = ttk.Button(button_canvas, text = "Show Inventory", command = lambda: self.DisplayAllRecords("Inventory"))
         self.SelectRecordButton= ttk.Button(button_canvas, text = "Select", state = DISABLED, command = self.SelectClient)
-        self.DeleteClientButton = ttk.Button(button_canvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
-        self.EditClientButton = ttk.Button(button_canvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
+        self.delete_records = ttk.Button(button_canvas, text = "Delete", state = DISABLED, command = self.DeleteClient)
+        self.edit_clients = ttk.Button(button_canvas, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
 
         # Button Placements
-        self.ShowRecordsButton.grid(row=0,column=0)
+        self.show_records.grid(row=0,column=0)
         self.SelectRecordButton.grid(row=0,column=1)
-        self.DeleteClientButton.grid(row=0,column=2)
-        self.EditClientButton.grid(row=0,column=3)
+        self.delete_records.grid(row=0,column=2)
+        self.edit_clients.grid(row=0,column=3)
 
         # Canvas Placements
         PopularItemsCanvas.pack(padx = 5, pady= (5,10))
@@ -493,9 +493,9 @@ class Parent():
     # Populate Tableview for each tab
     def DisplayAllRecords(self, table):
 
-        if self.ShowRecordsButton["text"] == "Return":
+        if self.show_records["text"] == "Return":
             # Change button back to saying "Show"
-            self.ShowRecordsButton.config(text = "Show Clients")
+            self.show_records.config(text = "Show Clients")
             # Clear Treeview
             self.tree.delete(*self.tree.get_children())
             self.tree.delete(item for item in self.tree.get_children())
@@ -512,13 +512,13 @@ class Parent():
             # Clear Record from database
  
 
-        self.ShowRecordsButton.config(text = "Return", state = ACTIVE)
+        self.show_records.config(text = "Return", state = ACTIVE)
 
         CONN.execute(f"SELECT * FROM {table}")
         Result = CONN.fetchall()
         for Record in Result:
             self.tree.insert('', 'end', values = Record[1:])
-        self.AmountOfClients.config(text="Amount of Clients: "+ str(len(self.tree.get_children())))
+        self.amount_of_clients.config(text="Amount of Clients: "+ str(len(self.tree.get_children())))
 
     def DeleteClient(self):
         myExit = messagebox.askyesno(title="Quit",message="Are you sure you want to delete\nthis client?")
@@ -545,32 +545,32 @@ class Parent():
 
             except:
                 selectedItem = "Deleted: None"
-            self.AmountOfClients.config(text="Records: "+str(len(self.self.tree.get_children())))
+            self.amount_of_clients.config(text="Records: "+str(len(self.self.tree.get_children())))
             self.RemoveClient.config(state=DISABLED)
             self.EditClient.config(state=DISABLED)
 
     def SelectClient(self, event):
 
 
-        self.DeleteClientButton.config(state = ACTIVE)
-        self.EditClientButton.config(state = ACTIVE)
+        self.delete_records.config(state = ACTIVE)
+        self.edit_clients.config(state = ACTIVE)
  
 
         items = self.tree.item(self.tree.selection())
 
-        self.CFirstname.config(text = "Firstname: "+items["values"][0][:20])
-        self.CLastname.config(text = "Lastname: "+items["values"][1][:20])
-        self.CCompany.config(text = "Company: "+items["values"][2][:20])
-        self.CTelephone.config(text = "Telephone: "+str(items["values"][3]))
-        self.CEmail.config(text = "Email: "+items["values"][4][:20])
-        self.CAddress.config(text = "Address: "+items["values"][5][:20])
-        self.CPostcode.config(text = "Postcode: "+items["values"][6][:20])
+        self.firstname.config(text = "Firstname: "+items["values"][0][:20])
+        self.lastname.config(text = "Lastname: "+items["values"][1][:20])
+        self.company.config(text = "Company: "+items["values"][2][:20])
+        self.telephone.config(text = "Telephone: "+str(items["values"][3]))
+        self.email.config(text = "Email: "+items["values"][4][:20])
+        self.address.config(text = "Address: "+items["values"][5][:20])
+        self.postcode.config(text = "Postcode: "+items["values"][6][:20])
 
     def PopulateEditForm(self):
 
         self.Submit.config(text = "Modify" , state= ACTIVE)
-        self.EditClientButton.config(state= DISABLED)
-        self.DeleteClientButton.config(state = DISABLED)
+        self.edit_clients.config(state= DISABLED)
+        self.delete_records.config(state = DISABLED)
 
         items = self.tree.item(self.tree.selection())
         # self.tree.delete(*self.self.tree.get_children())
