@@ -7,20 +7,25 @@ jobs:
  Approve-Request:
    runs-on: ubuntu-latest
    steps:
-   - name: Approve Pull Request
+   - name: Auto Approve 1
      uses: juliangruber/approve-pull-request-action@v1
      with:
        github-token: ${{ secrets.GITHUB_TOKEN }}
        number: 1
        
+   - name: Auto Approve 2
+     uses: hmarr/auto-approve-action@v2.1.0
+     with:
+      # The GITHUB_TOKEN secret
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+
  Merge-Branch:
-  needs: [Approve-Request]
   runs-on : ubuntu-latest
   steps:
-  - name: Auto Approve
+   - name: Merge Pull Request
    # You may pin to the exact commit or the version.
-   # uses: hmarr/auto-approve-action@5d04a5ca6da9aeb8ca9f31a5239b96fc3e003029
-    uses: hmarr/auto-approve-action@v2.1.0
-    with:
-     # The GITHUB_TOKEN secret
-     github-token: ${{ secrets.GITHUB_TOKEN }}
+   # uses: maxkomarychev/oction-merge-pull-request@ba8abd4e2a7776b2d973e088156ea69ac99c30d3
+     uses: maxkomarychev/oction-merge-pull-request@v0.7.1
+     with:
+       token: ${{ secrets.GITHUB_TOKEN }}
+
