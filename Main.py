@@ -135,9 +135,9 @@ class Parent():
         self.AmountOfClients.pack(side = TOP, pady = (0,5), padx = 5)
 
         # Button Definitions
-        self.ShowRecordsButton = ttk.Button(button_canvas,width = 10,text = "Show Clients",command = lambda: self.DisplayAllRecords("Customers"))
-        self.DeleteClientButton = ttk.Button(button_canvas,width = 8, text = "Delete", state = DISABLED, command = self.DeleteClient)
-        self.EditClientButton = ttk.Button(button_canvas, width = 8,text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
+        self.ShowRecordsButton = ttk.Button(button_canvas, width = 10,text = "Show Clients",command = lambda: self.DisplayAllRecords("Customers"))
+        self.DeleteClientButton = ttk.Button(button_canvas,width = 8,text = "Delete", state = DISABLED, command = self.DeleteClient)
+        self.EditClientButton = ttk.Button(button_canvas, width = 8, text = "Edit info", state = DISABLED, command = self.PopulateEditForm)
 
         # Button Placements
         self.ShowRecordsButton.grid(row=0,column=0, padx = 3)
@@ -148,7 +148,6 @@ class Parent():
         self.customers_treeview.pack(side = BOTTOM)
 
         self.AddClientForm(Window).pack(side = RIGHT, pady = 5)
-        
         background_canvas.place(x = 5, y = 5 , width = 380, height = 210)
     
     def DefaultCustomerSelectedInfo(self):
@@ -512,7 +511,7 @@ class Parent():
             self.Postcode.delete(0, END)
             # Clear Record from database
         
-            
+
         self.ShowRecordsButton.config(text = "Return", state = ACTIVE)
 
         CONN.execute(f"SELECT * FROM {table}")
