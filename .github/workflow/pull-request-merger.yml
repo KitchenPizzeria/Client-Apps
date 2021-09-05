@@ -1,0 +1,8 @@
+name: PR_merger
+
+on : workflow-dispatch
+
+jobs:
+  merge:
+  
+  
