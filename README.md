@@ -2,9 +2,7 @@
  
 ![Main Branch Badge](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=Main&style=shield)
 
-[![Linting Status](https://github.com/KitchenPizzeria/DIY-DIGITISED/workflows/Pylint/badge.svg)](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions)
-
-[![Linting Status](https://github.com/KitchenPizzeria/DIY-DIGITISED/workflows/Create-Release/badge.svg)](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions)
+[![Linting Status](https://github.com/KitchenPizzeria/DIY-DIGITISED/workflows/Pylint/badge.svg)](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions)|[![Linting Status](https://github.com/KitchenPizzeria/DIY-DIGITISED/workflows/Create-Release/badge.svg)](https://github.com/KitchenPizzeria/DIY-DIGITISED/actions)
 
 
  
