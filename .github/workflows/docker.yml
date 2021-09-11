@@ -1,0 +1,10 @@
+name: Docker
+
+on: workflow-dispatch
+
+jobs:
+  Build:
+    runs-on: macos-latest
+    steps:
+      run: docker build .
+    
